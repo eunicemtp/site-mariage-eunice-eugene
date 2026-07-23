@@ -286,6 +286,17 @@ p { margin: 0 0 1em; }
   letter-spacing: 0.05em;
 }
 
+/* ===== CHANSON ===== */
+.song-embed {
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+}
+.song-embed iframe {
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(58, 54, 47, 0.12);
+}
+
 /* ===== DETAILS ===== */
 .details-grid {
   display: grid;
