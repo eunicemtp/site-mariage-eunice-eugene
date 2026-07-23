@@ -32,34 +32,37 @@
 
 <!-- ===== HERO ===== -->
 <section class="hero">
-  <div class="hero-bg" style="background-image: url('images/hero.jpg');"></div>
-  <div class="hero-photo" style="background-image: url('images/hero.jpg');"></div>
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <p class="hero-kicker">Nous nous marions</p>
-    <h1 class="hero-names">Eunice <span class="hero-amp">&amp;</span> Eugène</h1>
-    <p class="hero-date">21 Novembre 2026 · Andenne &amp; Charleroi, Belgique</p>
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <p class="hero-kicker">Nous nous marions</p>
+      <h1 class="hero-names">Eunice <span class="hero-amp">&amp;</span> Eugène</h1>
+      <p class="hero-date">21 Novembre 2026 · Andenne &amp; Charleroi, Belgique</p>
 
-    <div class="countdown" id="countdown" aria-live="polite">
-      <div class="countdown-item">
-        <span class="countdown-number" id="cd-days">00</span>
-        <span class="countdown-label">jours</span>
+      <div class="countdown" id="countdown" aria-live="polite">
+        <div class="countdown-item">
+          <span class="countdown-number" id="cd-days">00</span>
+          <span class="countdown-label">jours</span>
+        </div>
+        <div class="countdown-item">
+          <span class="countdown-number" id="cd-hours">00</span>
+          <span class="countdown-label">heures</span>
+        </div>
+        <div class="countdown-item">
+          <span class="countdown-number" id="cd-minutes">00</span>
+          <span class="countdown-label">minutes</span>
+        </div>
+        <div class="countdown-item">
+          <span class="countdown-number" id="cd-seconds">00</span>
+          <span class="countdown-label">secondes</span>
+        </div>
       </div>
-      <div class="countdown-item">
-        <span class="countdown-number" id="cd-hours">00</span>
-        <span class="countdown-label">heures</span>
-      </div>
-      <div class="countdown-item">
-        <span class="countdown-number" id="cd-minutes">00</span>
-        <span class="countdown-label">minutes</span>
-      </div>
-      <div class="countdown-item">
-        <span class="countdown-number" id="cd-seconds">00</span>
-        <span class="countdown-label">secondes</span>
-      </div>
+
+      <a href="#rsvp" class="btn btn-primary hero-cta">Confirmer ma présence</a>
     </div>
 
-    <a href="#rsvp" class="btn btn-primary hero-cta">Confirmer ma présence</a>
+    <div class="hero-media">
+      <img src="images/hero.jpg" alt="Eunice et Eugène" class="hero-img">
+    </div>
   </div>
 </section>
 
