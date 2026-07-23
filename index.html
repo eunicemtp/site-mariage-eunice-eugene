@@ -168,17 +168,17 @@
   <div class="container narrow">
     <p class="eyebrow">Confirmation</p>
     <h2 class="section-title center">RSVP</h2>
-    <p class="rsvp-intro">Merci de nous confirmer votre présence avant le <strong>1er octobre 2026</strong>. Le bouton ci-dessous ouvrira votre application mail habituelle avec un message pré-rempli à nous envoyer.</p>
+    <p class="rsvp-intro">Merci de nous confirmer votre présence avant le <strong>1er octobre 2026</strong>. Votre réponse nous est envoyée directement, sans quitter cette page.</p>
 
-    <form id="rsvpForm" class="rsvp-form" action="mailto:VOTRE-EMAIL@a-remplacer.be" method="GET" enctype="text/plain">
+    <form id="rsvpForm" class="rsvp-form">
       <div class="form-row">
         <label for="rsvpName">Nom et prénom(s) *</label>
-        <input type="text" id="rsvpName" name="Nom" required autocomplete="name">
+        <input type="text" id="rsvpName" name="nom" required autocomplete="name">
       </div>
 
       <div class="form-row">
         <label for="rsvpAttending">Serez-vous présent(e) ? *</label>
-        <select id="rsvpAttending" name="Présence" required>
+        <select id="rsvpAttending" name="presence" required>
           <option value="">— Choisir —</option>
           <option value="Je serai présent(e)">Je serai présent(e)</option>
           <option value="Je ne pourrai pas venir">Je ne pourrai pas venir</option>
@@ -187,19 +187,21 @@
 
       <div class="form-row">
         <label for="rsvpGuests">Nombre de personnes (vous inclus(e)) *</label>
-        <input type="number" id="rsvpGuests" name="Nombre de personnes" min="1" max="10" value="1" required>
+        <input type="number" id="rsvpGuests" name="nombre_personnes" min="1" max="10" value="1" required>
       </div>
 
       <div class="form-row">
         <label for="rsvpMessage">Message pour les mariés (facultatif)</label>
-        <textarea id="rsvpMessage" name="Message" rows="4"></textarea>
+        <textarea id="rsvpMessage" name="message" rows="4"></textarea>
       </div>
 
-      <button type="submit" class="btn btn-primary">Envoyer ma confirmation par mail</button>
+      <button type="submit" class="btn btn-primary" id="rsvpSubmit">Envoyer ma confirmation</button>
+
+      <p class="rsvp-feedback" id="rsvpFeedback" role="status"></p>
 
       <p class="rsvp-note">
-        Ce formulaire ouvre directement votre messagerie (mail) avec les informations pré-remplies — aucune donnée n'est stockée sur un serveur tiers.
-        <strong>Limites à connaître :</strong> cela dépend de l'application mail configurée par défaut sur votre appareil, ne fonctionne pas s'il n'y en a pas (certains navigateurs mobiles), et il n'existe pas de liste centralisée automatique des réponses — chaque confirmation arrive comme un email séparé. Si vous n'avez pas de client mail configuré, vous pouvez nous écrire directement à l'adresse ci-dessous ou nous appeler.
+        Votre réponse est envoyée directement sur notre messagerie via EmailJS, sans passer par votre propre boîte mail. Aucune liste publique n'est constituée ; seuls Eunice et Eugène reçoivent votre réponse.
+        En cas de souci technique, vous pouvez toujours nous contacter directement — coordonnées en bas de page.
       </p>
     </form>
   </div>
@@ -236,6 +238,7 @@
   <p class="footer-names">Eunice &amp; Eugène · 21 Novembre 2026</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script src="js/countdown.js"></script>
 <script src="js/gallery.js"></script>
 <script src="js/rsvp.js"></script>

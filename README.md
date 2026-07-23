@@ -12,9 +12,10 @@ site-mariage-eunice-eugene/
 ├── js/
 │   ├── countdown.js   → compte à rebours
 │   ├── gallery.js     → galerie + lightbox
-│   ├── rsvp.js         → formulaire RSVP (mailto)
+│   ├── rsvp.js         → formulaire RSVP (EmailJS)
 │   └── nav.js          → menu mobile
 ├── images/              → photos optimisées (hero.jpg, gallery-1.jpg … gallery-8.jpg)
+├── emailjs-template.html → template email stylé à coller dans EmailJS (voir section RSVP)
 └── README.md
 ```
 
@@ -31,7 +32,8 @@ Aucune commande `npm install` ni build n'est nécessaire — vous éditez les fi
 
 Le site contient volontairement des placeholders explicites à remplacer :
 
-- [ ] **Email RSVP / contact** : remplacer `VOTRE-EMAIL@a-remplacer.be` dans `index.html` (2 occurrences) et dans `js/rsvp.js` (`RSVP_EMAIL`), une fois votre adresse liée au domaine créée.
+- [ ] **EmailJS** : coller vos 3 identifiants (`EMAILJS_PUBLIC_KEY`, `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID`) en haut de `js/rsvp.js` — voir section RSVP ci-dessous. Sans ça, le formulaire affiche un message d'erreur au lieu d'envoyer.
+- [ ] **Email de contact** : remplacer `VOTRE-EMAIL@a-remplacer.be` dans `index.html` (section `#contact`) par votre adresse définitive, une fois créée avec le domaine.
 - [ ] **Horaires exacts** des cérémonies (actuellement « à confirmer ») dans `index.html`, section `#details`.
 - [ ] **Heure exacte** dans `js/countdown.js` (actuellement `10h00` par défaut, ligne `WEDDING_DATE`).
 - [ ] **Détails parking** (accès précis, fléchage) — j'ai laissé un texte générique honnête plutôt que d'inventer des informations que je ne pouvais pas vérifier ; complétez-les vous-même dans `index.html`.
@@ -52,35 +54,42 @@ Vos 9 photos originales (`/Users/eunice_mutope/Documents/Claude/photos-mariage/`
 
 Si vous ajoutez d'autres photos plus tard : compressez-les d'abord (max ~1500 px de large, JPEG qualité 60-70) avant de les déposer dans `images/`, pour garder un site rapide.
 
-## RSVP : mailto par défaut — limites réelles
+## RSVP : envoi direct via EmailJS
 
-Le formulaire RSVP (`#rsvp`) construit un lien `mailto:` au moment de l'envoi (voir `js/rsvp.js`) et l'ouvre dans le client mail par défaut de l'appareil du visiteur, avec le message pré-rempli.
+Vous avez choisi l'envoi direct (le visiteur n'a pas besoin d'un client mail configuré) plutôt que le `mailto:`. C'est fait avec [EmailJS](https://www.emailjs.com) : le formulaire envoie les données directement depuis le JavaScript vers votre boîte mail (`mtpeunice@gmail.com` par défaut, à ajuster si besoin), via les serveurs EmailJS.
 
-**Avantages :** zéro backend, zéro service tiers, zéro inscription, gratuit à vie, aucune donnée transmise à un tiers.
+**Ce que ça implique, pour rester transparent :** EmailJS est un **service tiers** — vous avez créé un compte chez eux, et une clé publique API sera visible dans le code source du site une fois configurée (normal, prévue pour cet usage : elle ne permet que d'envoyer via votre template, pas d'accéder à votre boîte). Plan gratuit : ~200 emails/mois, largement suffisant pour 200 invités.
 
-**Limites honnêtes, noir sur blanc :**
-- Ça dépend entièrement de l'**application mail configurée par défaut** sur l'appareil du visiteur (Mail, Outlook, Gmail app…). Si rien n'est configuré, le clic ne fait visiblement rien.
-- Sur **mobile**, c'est particulièrement peu fiable : beaucoup de gens naviguent depuis un navigateur mobile sans app mail par défaut correctement associée (surtout sous Android avec plusieurs apps mail installées), ou depuis un webmail dans le navigateur (Gmail web) qui n'est pas déclenché par `mailto:`.
-- Il n'y a **pas de liste centralisée automatique** : chaque RSVP arrive comme un email séparé dans votre boîte. Vous devrez les compiler vous-même (ex. dans un tableau).
-- Aucune confirmation visuelle fiable que l'email a bien été envoyé (le visiteur doit lui-même cliquer "Envoyer" dans son client mail).
+### Configuration (à faire une fois, dans votre dashboard EmailJS)
 
-C'est pourquoi une note avec le contact direct (téléphone / email) est affichée sous le formulaire, en secours.
-
-### Alternative plus fiable : EmailJS (gratuit, sans backend, mais service tiers)
-
-[EmailJS](https://www.emailjs.com) permet d'envoyer l'email **directement depuis le JavaScript**, sans dépendre du client mail du visiteur, et vous donne une liste des réponses dans un tableau de bord. Plan gratuit : ~200 emails/mois, largement suffisant pour 200 invités.
-
-**Différence importante avec le mailto :** EmailJS est un **service tiers** — vous créez un compte chez eux, votre clé publique API est visible dans le code source du site (normal et prévu pour leur usage, mais ce n'est plus "zéro tiers" comme le mailto), et l'envoi passe par leurs serveurs. Ce n'est pas strictement équivalent au mailto, juste un compromis différent : plus fiable, moins "pur".
-
-Si vous voulez basculer :
-1. Créez un compte gratuit sur [emailjs.com](https://www.emailjs.com).
-2. Connectez votre boîte mail comme "Email Service".
-3. Créez un "Email Template" avec les variables `{{Nom}}`, `{{Présence}}`, `{{Nombre de personnes}}`, `{{Message}}` (les mêmes noms que les attributs `name` des champs du formulaire dans `index.html`).
-4. Ajoutez avant `</body>` dans `index.html` :
-   ```html
-   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+1. Connectez-vous sur [dashboard.emailjs.com](https://dashboard.emailjs.com).
+2. **Email Services** → *Add New Service* → connectez votre boîte Gmail (ou celle liée à votre futur domaine). Notez le **Service ID** généré.
+3. **Email Templates** → *Create New Template*. Dans le corps du template, utilisez ces variables (mêmes noms que les champs du formulaire dans `index.html`) :
    ```
-5. Remplacez le contenu de `js/rsvp.js` par le code d'exemple donné en commentaire en haut de ce même fichier (bloc EmailJS déjà rédigé, prêt à activer).
+   Nom : {{nom}}
+   Présence : {{presence}}
+   Nombre de personnes : {{nombre_personnes}}
+   Message : {{message}}
+   ```
+   **Important :** le destinataire ("To Email") se configure dans l'onglet **Settings** du template (pas dans le corps du message) → mettez `mtpeunice@gmail.com`. Sans ça, l'envoi échoue avec l'erreur "The recipients address is empty". Notez aussi le **Template ID**.
+4. **Account** → **General** → copiez votre **Public Key**.
+5. Ouvrez `js/rsvp.js` et remplacez les 3 placeholders en haut du fichier :
+   ```js
+   var EMAILJS_PUBLIC_KEY = 'VOTRE_PUBLIC_KEY';
+   var EMAILJS_SERVICE_ID = 'VOTRE_SERVICE_ID';
+   var EMAILJS_TEMPLATE_ID = 'VOTRE_TEMPLATE_ID';
+   ```
+6. Rechargez la page (Live Server) et testez une soumission réelle — vous devriez recevoir l'email.
+
+Tant que ces 3 valeurs ne sont pas renseignées, le formulaire affiche un message d'erreur clair au visiteur plutôt que d'échouer silencieusement.
+
+### Template stylé (habillage visuel de l'email reçu)
+
+Le fichier [emailjs-template.html](emailjs-template.html) contient un template HTML habillé aux couleurs du site (vert sauge, doré, blanc cassé) plutôt qu'un email texte brut. Pour l'utiliser : ouvrez votre template EmailJS → onglet **Content** → basculez en mode code/HTML → copiez-collez le contenu du `<table>...</table>` de ce fichier (pas les balises `<!DOCTYPE>`/`<head>`/`<body>`, qui ne servent qu'à prévisualiser localement). Le fichier n'est pas utilisé par le site lui-même, uniquement comme source à coller dans EmailJS.
+
+### Pourquoi pas le mailto (pour info)
+
+L'alternative "zéro tiers" reste le `mailto:` (ouvre le client mail du visiteur avec un message pré-rempli) : plus "pur" côté vie privée, mais peu fiable sur mobile et sans liste centralisée des réponses. Vous l'avez écarté au profit d'EmailJS pour la fiabilité — c'est documenté ici au cas où vous changiez d'avis ; le code correspondant reste simple à réintroduire si besoin (demandez, on peut le remettre en option).
 
 ## Nom de domaine et configuration DNS
 

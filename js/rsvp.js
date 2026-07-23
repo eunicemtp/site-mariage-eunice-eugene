@@ -1,70 +1,80 @@
 // ============================================================
-// RSVP — solution par défaut : mailto: (zéro backend, zéro inscription)
+// RSVP — envoi direct via EmailJS (service tiers, compte gratuit)
 //
-// Au submit, on construit un lien mailto: avec un sujet et un corps
-// de message proprement formatés à partir des champs du formulaire,
-// puis on ouvre ce lien. C'est plus fiable que de laisser le
-// navigateur gérer seul action="mailto:" (qui produit un corps de
-// mail mal formaté sur beaucoup de clients).
-//
-// Limite réelle : ça ouvre l'application mail PAR DÉFAUT de l'appareil
-// du visiteur. Si l'invité n'en a pas de configurée (fréquent sur
-// certains navigateurs mobiles), rien ne se passe visiblement — d'où
-// la note affichée sous le formulaire avec le contact direct en secours.
+// Le formulaire est envoyé directement à votre adresse mail via
+// l'API EmailJS, sans que le visiteur ait besoin d'un client mail
+// configuré sur son appareil. C'est ce que vous avez choisi à la
+// place du mailto (voir README.md pour la comparaison des deux
+// approches et leurs limites respectives).
 //
 // ------------------------------------------------------------
-// POUR PASSER À EMAILJS (optionnel, plus fiable, toujours gratuit) :
-// EmailJS envoie le mail directement depuis le JS, sans que le
-// visiteur ait besoin d'un client mail configuré, et vous obtenez
-// une liste centralisée des réponses dans votre tableau de bord
-// EmailJS. Étapes :
-//   1. Créer un compte gratuit sur https://www.emailjs.com
-//      (plan gratuit : ~200 emails/mois)
-//   2. Connecter votre boîte mail comme "Service" EmailJS
-//   3. Créer un "Template" avec les variables {{nom}}, {{presence}},
-//      {{personnes}}, {{message}}
-//   4. Dans index.html, ajouter avant </body> :
-//      <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-//   5. Remplacer le contenu de ce fichier par quelque chose comme :
+// CONFIGURATION REQUISE (3 valeurs à coller ci-dessous) :
 //
-//      emailjs.init('VOTRE_PUBLIC_KEY');
-//      document.getElementById('rsvpForm').addEventListener('submit', function (e) {
-//        e.preventDefault();
-//        emailjs.sendForm('VOTRE_SERVICE_ID', 'VOTRE_TEMPLATE_ID', this)
-//          .then(function () { alert('Merci, votre réponse a bien été envoyée !'); })
-//          .catch(function () { alert("Une erreur est survenue, merci de réessayer."); });
-//      });
+//   1. Créez un "Service" EmailJS (Email Services → Add New Service)
+//      → connectez votre boîte Gmail → copiez le "Service ID".
+//   2. Créez un "Template" (Email Templates → Create New Template)
+//      avec un corps de mail utilisant ces variables :
+//        {{nom}}, {{presence}}, {{nombre_personnes}}, {{message}}
+//      → copiez le "Template ID".
+//   3. Dans EmailJS → Account → General, copiez votre "Public Key".
+//   4. Collez les 3 valeurs ci-dessous à la place des placeholders.
 //
-//   Attention : EmailJS reste un service tiers (compte à créer, clé
-//   publique visible côté client). Ce n'est pas "plus pur" que le
-//   mailto, juste plus fiable pour la réception. À vous de choisir.
+// Tant que ces 3 valeurs ne sont pas renseignées, le formulaire
+// affichera un message d'erreur au lieu d'envoyer quoi que ce soit.
 // ============================================================
 (function () {
+  var EMAILJS_PUBLIC_KEY = '5sMglvaFz6l3sHO0h';
+  var EMAILJS_SERVICE_ID = 'service_04i12bd';
+  var EMAILJS_TEMPLATE_ID = 'template_8hm8yhf';
+
   var form = document.getElementById('rsvpForm');
+  var submitBtn = document.getElementById('rsvpSubmit');
+  var feedback = document.getElementById('rsvpFeedback');
   if (!form) return;
 
-  var RSVP_EMAIL = 'VOTRE-EMAIL@a-remplacer.be';
+  var isConfigured =
+    EMAILJS_PUBLIC_KEY.indexOf('VOTRE_') !== 0 &&
+    EMAILJS_SERVICE_ID.indexOf('VOTRE_') !== 0 &&
+    EMAILJS_TEMPLATE_ID.indexOf('VOTRE_') !== 0;
+
+  if (isConfigured && window.emailjs) {
+    window.emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
+
+  function setFeedback(message, type) {
+    feedback.textContent = message;
+    feedback.className = 'rsvp-feedback' + (type ? ' rsvp-feedback-' + type : '');
+  }
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    var name = form.querySelector('#rsvpName').value.trim();
-    var attending = form.querySelector('#rsvpAttending').value;
-    var guests = form.querySelector('#rsvpGuests').value;
-    var message = form.querySelector('#rsvpMessage').value.trim();
+    if (!isConfigured || !window.emailjs) {
+      setFeedback(
+        "Le formulaire n'est pas encore configuré (EmailJS). Merci de nous contacter directement par téléphone ou email — coordonnées en bas de page.",
+        'error'
+      );
+      return;
+    }
 
-    var subject = 'RSVP Mariage — ' + name;
-    var body =
-      'Nom : ' + name + '\n' +
-      'Présence : ' + attending + '\n' +
-      'Nombre de personnes : ' + guests + '\n' +
-      'Message : ' + (message || '—');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Envoi en cours…';
+    setFeedback('', '');
 
-    var mailtoLink =
-      'mailto:' + RSVP_EMAIL +
-      '?subject=' + encodeURIComponent(subject) +
-      '&body=' + encodeURIComponent(body);
-
-    window.location.href = mailtoLink;
+    window.emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form)
+      .then(function () {
+        setFeedback('Merci ! Votre réponse a bien été envoyée.', 'success');
+        form.reset();
+        submitBtn.textContent = 'Envoyer ma confirmation';
+        submitBtn.disabled = false;
+      })
+      .catch(function () {
+        setFeedback(
+          "Une erreur est survenue lors de l'envoi. Merci de réessayer, ou de nous contacter directement — coordonnées en bas de page.",
+          'error'
+        );
+        submitBtn.textContent = 'Envoyer ma confirmation';
+        submitBtn.disabled = false;
+      });
   });
 })();

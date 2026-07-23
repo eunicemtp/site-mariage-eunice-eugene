@@ -441,6 +441,17 @@ p { margin: 0 0 1em; }
 }
 
 .rsvp-form .btn { width: 100%; text-align: center; border: none; }
+.rsvp-form .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+.rsvp-feedback {
+  margin: 16px 0 0;
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-align: center;
+}
+.rsvp-feedback:empty { margin: 0; }
+.rsvp-feedback-success { color: var(--color-sage-dark); }
+.rsvp-feedback-error { color: #A6483A; }
 
 .rsvp-note {
   font-size: 0.8rem;
