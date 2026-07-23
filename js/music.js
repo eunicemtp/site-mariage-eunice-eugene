@@ -16,6 +16,13 @@
 // méthode fiable sur iOS Safari, où démuter un iframe déjà chargé
 // via l'API (postMessage) est souvent silencieusement ignoré.
 //
+// Le paramètre "origin" est passé explicitement à l'API : sans lui,
+// l'API YouTube devine parfois mal l'origine de la page (notamment
+// via une IP locale avec port, ex. http://192.168.x.x:8642) et le
+// postMessage interne échoue silencieusement ("Failed to execute
+// postMessage on DOMWindow... origin does not match"), ce qui bloque
+// tout le lecteur sans jamais déclencher onReady.
+//
 // Le bouton flottant affiche une icône de haut-parleur (son/muet),
 // mais en interne il fait juste play()/pause() une fois la musique
 // démarrée — comme demandé.
@@ -24,6 +31,7 @@
   var VIDEO_ID = 'WMo7yIAT0jk';
   var player = null;
   var apiReady = false;
+  var playerReady = false;
   var startRequested = false;
   var toggleBtn = document.getElementById('musicToggle');
 
@@ -44,10 +52,12 @@
         controls: 0,
         disablekb: 1,
         modestbranding: 1,
-        playsinline: 1
+        playsinline: 1,
+        origin: window.location.origin
       },
       events: {
         onReady: function (e) {
+          playerReady = true;
           e.target.playVideo();
         },
         onStateChange: function (e) {
@@ -80,6 +90,8 @@
       startMusic();
       return;
     }
+    if (!playerReady || typeof player.getPlayerState !== 'function') return;
+
     var state = player.getPlayerState();
     if (state === YT.PlayerState.PLAYING) {
       player.pauseVideo();
