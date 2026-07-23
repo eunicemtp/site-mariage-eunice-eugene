@@ -69,6 +69,7 @@ Vous avez choisi l'envoi direct (le visiteur n'a pas besoin d'un client mail con
    Nom : {{nom}}
    Présence : {{presence}}
    Nombre de personnes : {{nombre_personnes}}
+   Dont nombre d'enfants : {{nombre_enfants}}
    Message : {{message}}
    ```
    **Important :** le destinataire ("To Email") se configure dans l'onglet **Settings** du template (pas dans le corps du message) → mettez `mtpeunice@gmail.com`. Sans ça, l'envoi échoue avec l'erreur "The recipients address is empty". Notez aussi le **Template ID**.
