@@ -467,6 +467,18 @@ p { margin: 0 0 1em; }
   font-size: 1.05rem;
 }
 
+.cadeaux-iban {
+  display: inline-block;
+  margin: 20px 0;
+  padding: 12px 24px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  color: var(--color-text);
+}
+
 .contact-links {
   display: flex;
   flex-direction: column;
@@ -504,6 +516,13 @@ p { margin: 0 0 1em; }
   text-transform: uppercase;
   color: #fff;
   opacity: 0.7;
+  margin-bottom: 0.6em;
+}
+.footer-iban {
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: var(--color-gold-light);
+  opacity: 0.8;
   margin-bottom: 0;
 }
 
