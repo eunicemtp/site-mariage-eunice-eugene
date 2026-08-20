@@ -21,9 +21,8 @@
     </button>
     <nav class="nav-links" id="navLinks">
       <a href="#histoire">Notre histoire</a>
-      <a href="#details">Détails</a>
+      <a href="#invitation">Mon invitation</a>
       <a href="#galerie">Galerie</a>
-      <a href="#rsvp">RSVP</a>
       <a href="#cadeaux">Cadeaux</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -58,7 +57,7 @@
         </div>
       </div>
 
-      <a href="#rsvp" class="btn btn-primary hero-cta">Confirmer ma présence</a>
+      <a href="#invitation" class="btn btn-primary hero-cta">Trouver mon invitation</a>
     </div>
 
     <div class="hero-media">
@@ -85,42 +84,24 @@
   </div>
 </section>
 
-<!-- ===== DÉTAILS PRATIQUES ===== -->
-<section class="section section-alt" id="details">
-  <div class="container">
-    <p class="eyebrow">Informations pratiques</p>
-    <h2 class="section-title center">Le jour J</h2>
+<!-- ===== TROUVEZ VOTRE INVITATION ===== -->
+<section class="section section-alt" id="invitation">
+  <div class="container narrow center">
+    <p class="eyebrow">Votre invitation</p>
+    <h2 class="section-title">Trouvez votre invitation</h2>
     <div class="divider"><span class="divider-mark">✦</span></div>
+    <p class="invitation-intro">Entrez votre prénom ou votre nom pour découvrir votre invitation personnalisée et confirmer votre présence.</p>
 
-    <div class="details-grid">
-      <div class="detail-card">
-        <div class="detail-icon">💍</div>
-        <h3>Cérémonie civile</h3>
-        <p class="detail-place">Hôtel de Ville d'Andenne</p>
-        <p class="detail-address">Place des Tilleuls 1<br>5300 Andenne</p>
-        <p class="detail-time">Horaire : <em>à confirmer</em></p>
-      </div>
+    <form id="guestSearchForm" class="guest-search-form">
+      <input type="text" id="guestSearchInput" placeholder="Votre prénom ou nom" autocomplete="off" required>
+      <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
 
-      <div class="detail-card">
-        <div class="detail-icon">⛪</div>
-        <h3>Cérémonie religieuse</h3>
-        <p class="detail-place">Église d'Andenne</p>
-        <p class="detail-address">Rue de la Justice 11<br>5300 Andenne</p>
-        <p class="detail-time">Horaire : <em>à confirmer</em></p>
-        <p class="detail-note">Un espace de parking est disponible à proximité de l'église.</p>
-      </div>
+    <p class="guest-search-feedback" id="guestSearchFeedback" role="status"></p>
 
-      <div class="detail-card">
-        <div class="detail-icon">🥂</div>
-        <h3>Réception</h3>
-        <p class="detail-place">Prestige Event Center</p>
-        <p class="detail-address">Boulevard Paul Janson 5<br>6000 Charleroi</p>
-        <p class="detail-time">Horaire : <em>à confirmer</em></p>
-        <p class="detail-note">Un parking se trouve à proximité immédiate du Prestige Event Center. Fléchage et accès précis communiqués prochainement — merci de prévoir large en cas d'affluence.</p>
-      </div>
-    </div>
+    <ul class="guest-results-list" id="guestResultsList" hidden></ul>
 
-    <p class="details-footnote">* Les horaires exacts et les indications d'accès (parking, fléchage) seront confirmés et communiqués aux invités avant le mariage.</p>
+    <div class="invitation-card" id="invitationCard" hidden></div>
   </div>
 </section>
 
@@ -166,56 +147,6 @@
   <img class="lightbox-img" id="lightboxImg" src="" alt="">
   <button class="lightbox-next" id="lightboxNext" aria-label="Photo suivante">&#8250;</button>
 </div>
-
-<!-- ===== RSVP ===== -->
-<section class="section section-alt" id="rsvp">
-  <div class="container narrow">
-    <p class="eyebrow">Confirmation</p>
-    <h2 class="section-title center">RSVP</h2>
-    <div class="divider"><span class="divider-mark">✦</span></div>
-    <p class="rsvp-intro">Merci de nous confirmer votre présence avant le <strong>1er octobre 2026</strong>. Votre réponse nous est envoyée directement, sans quitter cette page.</p>
-
-    <form id="rsvpForm" class="rsvp-form">
-      <div class="form-row">
-        <label for="rsvpName">Nom et prénom(s) *</label>
-        <input type="text" id="rsvpName" name="nom" required autocomplete="name">
-      </div>
-
-      <div class="form-row">
-        <label for="rsvpAttending">Serez-vous présent(e) ? *</label>
-        <select id="rsvpAttending" name="presence" required>
-          <option value="">— Choisir —</option>
-          <option value="Je serai présent(e)">Je serai présent(e)</option>
-          <option value="Je ne pourrai pas venir">Je ne pourrai pas venir</option>
-        </select>
-      </div>
-
-      <div class="form-row">
-        <label for="rsvpGuests">Nombre de personnes (vous inclus(e)) *</label>
-        <input type="number" id="rsvpGuests" name="nombre_personnes" min="1" max="10" value="1" required>
-      </div>
-
-      <div class="form-row">
-        <label for="rsvpChildren">Dont nombre d'enfants</label>
-        <input type="number" id="rsvpChildren" name="nombre_enfants" min="0" max="10" value="0">
-      </div>
-
-      <div class="form-row">
-        <label for="rsvpMessage">Message pour les mariés (facultatif)</label>
-        <textarea id="rsvpMessage" name="message" rows="4"></textarea>
-      </div>
-
-      <button type="submit" class="btn btn-primary" id="rsvpSubmit">Envoyer ma confirmation</button>
-
-      <p class="rsvp-feedback" id="rsvpFeedback" role="status"></p>
-
-      <p class="rsvp-note">
-        Votre réponse est envoyée directement sur notre messagerie. Aucune liste publique n'est constituée ; seuls Eunice et Eugène reçoivent votre réponse.
-        En cas de souci technique, vous pouvez toujours nous contacter directement — coordonnées en bas de page.
-      </p>
-    </form>
-  </div>
-</section>
 
 <!-- ===== CADEAUX ===== -->
 <section class="section" id="cadeaux">
@@ -270,7 +201,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script src="js/countdown.js"></script>
 <script src="js/gallery.js"></script>
-<script src="js/rsvp.js"></script>
+<script src="js/invitation.js"></script>
 <script src="js/nav.js"></script>
 <script src="js/music.js"></script>
 </body>

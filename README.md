@@ -10,11 +10,15 @@ site-mariage-eunice-eugene/
 ├── css/
 │   └── style.css
 ├── js/
-│   ├── countdown.js   → compte à rebours
-│   ├── gallery.js     → galerie + lightbox
-│   ├── rsvp.js         → formulaire RSVP (EmailJS)
+│   ├── countdown.js    → compte à rebours
+│   ├── gallery.js      → galerie + lightbox
+│   ├── invitation.js   → recherche d'invité + invitation personnalisée + RSVP
+│   ├── music.js        → musique de fond (YouTube caché) + bouton flottant
 │   └── nav.js          → menu mobile
-├── images/              → photos optimisées (hero.jpg, gallery-1.jpg … gallery-8.jpg)
+├── images/              → photos optimisées + logo.svg
+├── apps-script/
+│   ├── Code.gs          → backend Google Apps Script (API du Google Sheet invités)
+│   └── SETUP.md         → guide pas-à-pas : créer le Sheet + déployer le script
 ├── emailjs-template.html → template email stylé à coller dans EmailJS (voir section RSVP)
 └── README.md
 ```
@@ -32,11 +36,12 @@ Aucune commande `npm install` ni build n'est nécessaire — vous éditez les fi
 
 Le site contient volontairement des placeholders explicites à remplacer :
 
-- [ ] **EmailJS** : coller vos 3 identifiants (`EMAILJS_PUBLIC_KEY`, `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID`) en haut de `js/rsvp.js` — voir section RSVP ci-dessous. Sans ça, le formulaire affiche un message d'erreur au lieu d'envoyer.
+- [ ] **Google Sheet + Apps Script** : créer la liste d'invités et déployer le backend — voir [`apps-script/SETUP.md`](apps-script/SETUP.md). Une fois l'URL obtenue, la coller dans `js/invitation.js` (constante `APPS_SCRIPT_URL`). Sans ça, la recherche d'invitation affiche un message d'erreur au lieu de planter.
+- [ ] **EmailJS** : les 3 identifiants sont déjà renseignés en haut de `js/invitation.js` (notification email en parallèle du Google Sheet) — à revérifier si vous changez de compte.
 - [ ] **Email de contact** : remplacer `VOTRE-EMAIL@a-remplacer.be` dans `index.html` (section `#contact`) par votre adresse définitive, une fois créée avec le domaine.
-- [ ] **Horaires exacts** des cérémonies (actuellement « à confirmer ») dans `index.html`, section `#details`.
+- [ ] **Horaires exacts** des cérémonies (actuellement « à confirmer ») dans `js/invitation.js`, objet `EVENTS` en haut du fichier.
 - [ ] **Heure exacte** dans `js/countdown.js` (actuellement `10h00` par défaut, ligne `WEDDING_DATE`).
-- [ ] **Détails parking** (accès précis, fléchage) — j'ai laissé un texte générique honnête plutôt que d'inventer des informations que je ne pouvais pas vérifier ; complétez-les vous-même dans `index.html`.
+- [ ] **Détails parking** (accès précis, fléchage) — j'ai laissé un texte générique honnête plutôt que d'inventer des informations que je ne pouvais pas vérifier ; complétez-les vous-même dans `js/invitation.js` (objet `EVENTS`).
 - [ ] **Section cadeaux** : à personnaliser ou remplacer par un lien de liste de mariage si vous en créez une.
 - [ ] **Nom de domaine final** (voir section DNS ci-dessous).
 
@@ -54,43 +59,32 @@ Vos 9 photos originales (`/Users/eunice_mutope/Documents/Claude/photos-mariage/`
 
 Si vous ajoutez d'autres photos plus tard : compressez-les d'abord (max ~1500 px de large, JPEG qualité 60-70) avant de les déposer dans `images/`, pour garder un site rapide.
 
-## RSVP : envoi direct via EmailJS
+## Invitations personnalisées : architecture
 
-Vous avez choisi l'envoi direct (le visiteur n'a pas besoin d'un client mail configuré) plutôt que le `mailto:`. C'est fait avec [EmailJS](https://www.emailjs.com) : le formulaire envoie les données directement depuis le JavaScript vers votre boîte mail (`mtpeunice@gmail.com` par défaut, à ajuster si besoin), via les serveurs EmailJS.
+Plutôt qu'un site public affichant les adresses/horaires à n'importe qui, chaque invité tape son prénom ou son nom dans la section **« Trouvez votre invitation »** et découvre uniquement les événements auxquels il/elle est convié·e (civile, religieuse, réception) — comme une vraie invitation, pas une page publique.
 
-**Ce que ça implique, pour rester transparent :** EmailJS est un **service tiers** — vous avez créé un compte chez eux, et une clé publique API sera visible dans le code source du site une fois configurée (normal, prévue pour cet usage : elle ne permet que d'envoyer via votre template, pas d'accéder à votre boîte). Plan gratuit : ~200 emails/mois, largement suffisant pour 200 invités.
+**Ce que ça implique techniquement :** garder une liste de ~200 invités confidentielle (qui est invité à quoi) n'est pas possible avec du HTML/CSS/JS 100 % statique — un fichier JS public serait lisible par n'importe qui via le code source. Le site s'appuie donc sur un petit backend gratuit :
 
-### Configuration (à faire une fois, dans votre dashboard EmailJS)
+- **Google Sheet** : la liste d'invités, que vous éditez vous-même comme un tableau normal (Prénom, Nom, quels événements, email, statut RSVP…).
+- **Google Apps Script** : un petit script (gratuit, pas de serveur à payer) qui expose ce Sheet au site sous forme d'API — recherche par nom, récupération d'une invitation, enregistrement d'une réponse RSVP.
+- Le script ne renvoie **jamais** la liste complète : une recherche ne renvoie que les noms correspondant à ce qui a été tapé, et le détail d'une invitation n'est renvoyé que pour la personne sélectionnée.
 
-1. Connectez-vous sur [dashboard.emailjs.com](https://dashboard.emailjs.com).
-2. **Email Services** → *Add New Service* → connectez votre boîte Gmail (ou celle liée à votre futur domaine). Notez le **Service ID** généré.
-3. **Email Templates** → *Create New Template*. Dans le corps du template, utilisez ces variables (mêmes noms que les champs du formulaire dans `index.html`) :
-   ```
-   Nom : {{nom}}
-   Présence : {{presence}}
-   Nombre de personnes : {{nombre_personnes}}
-   Dont nombre d'enfants : {{nombre_enfants}}
-   Message : {{message}}
-   ```
-   **Important :** le destinataire ("To Email") se configure dans l'onglet **Settings** du template (pas dans le corps du message) → mettez `mtpeunice@gmail.com`. Sans ça, l'envoi échoue avec l'erreur "The recipients address is empty". Notez aussi le **Template ID**.
-4. **Account** → **General** → copiez votre **Public Key**.
-5. Ouvrez `js/rsvp.js` et remplacez les 3 placeholders en haut du fichier :
-   ```js
-   var EMAILJS_PUBLIC_KEY = 'VOTRE_PUBLIC_KEY';
-   var EMAILJS_SERVICE_ID = 'VOTRE_SERVICE_ID';
-   var EMAILJS_TEMPLATE_ID = 'VOTRE_TEMPLATE_ID';
-   ```
-6. Rechargez la page (Live Server) et testez une soumission réelle — vous devriez recevoir l'email.
+**Configuration complète (Sheet + script + déploiement) : voir [`apps-script/SETUP.md`](apps-script/SETUP.md).** Une fois l'URL du script obtenue, collez-la dans `js/invitation.js` (`APPS_SCRIPT_URL`, en haut du fichier).
 
-Tant que ces 3 valeurs ne sont pas renseignées, le formulaire affiche un message d'erreur clair au visiteur plutôt que d'échouer silencieusement.
+### RSVP intégré + notification email (EmailJS)
 
-### Template stylé (habillage visuel de l'email reçu)
+Le RSVP n'est plus un formulaire public séparé : il apparaît directement dans l'invitation personnalisée, une fois l'invité identifié. À la soumission, deux choses se passent en parallèle (indépendantes — si l'une échoue, l'autre peut quand même réussir) :
 
-Le fichier [emailjs-template.html](emailjs-template.html) contient un template HTML habillé aux couleurs du site (vert sauge, doré, blanc cassé) plutôt qu'un email texte brut. Pour l'utiliser : ouvrez votre template EmailJS → onglet **Content** → basculez en mode code/HTML → copiez-collez le contenu du `<table>...</table>` de ce fichier (pas les balises `<!DOCTYPE>`/`<head>`/`<body>`, qui ne servent qu'à prévisualiser localement). Le fichier n'est pas utilisé par le site lui-même, uniquement comme source à coller dans EmailJS.
+1. La réponse est enregistrée dans le Google Sheet (colonnes Email / Statut RSVP / Nombre de personnes / Message de la ligne correspondante).
+2. Une notification est envoyée par email via [EmailJS](https://www.emailjs.com) (déjà configuré dans `js/invitation.js` avec vos identifiants existants) pour être prévenu instantanément.
 
-### Pourquoi pas le mailto (pour info)
+### Newsletter (mises à jour + photos après le mariage)
 
-L'alternative "zéro tiers" reste le `mailto:` (ouvre le client mail du visiteur avec un message pré-rempli) : plus "pur" côté vie privée, mais peu fiable sur mobile et sans liste centralisée des réponses. Vous l'avez écarté au profit d'EmailJS pour la fiabilité — c'est documenté ici au cas où vous changiez d'avis ; le code correspondant reste simple à réintroduire si besoin (demandez, on peut le remettre en option).
+Le champ email collecté dans l'invitation personnalisée atterrit dans la colonne **Email** du Google Sheet — c'est votre liste de diffusion. Pour envoyer une mise à jour groupée (changement d'horaire, lien des photos après le mariage), **exportez cette colonne** et importez-la dans un outil d'emailing gratuit le moment venu (Mailchimp ou Brevo, gratuits jusqu'à plusieurs centaines de contacts). Je n'ai pas construit d'envoi de masse automatique dans ce projet — c'est un besoin ponctuel (quelques fois avant/après le mariage), pas quelque chose qui justifie de le complexifier davantage ; dites-moi si vous voulez que je l'ajoute quand même.
+
+### Template email stylé (habillage visuel de la notification reçue)
+
+Le fichier [emailjs-template.html](emailjs-template.html) contient un template HTML habillé aux couleurs du site plutôt qu'un email texte brut. Pour l'utiliser : ouvrez votre template EmailJS → onglet **Content** → basculez en mode code/HTML → copiez-collez le contenu du `<table>...</table>` de ce fichier. Le fichier n'est pas utilisé par le site lui-même, uniquement comme source à coller dans EmailJS.
 
 ## Nom de domaine et configuration DNS
 
