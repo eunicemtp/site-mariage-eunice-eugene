@@ -595,15 +595,51 @@ p { margin: 0 0 1em; }
 }
 
 .cadeaux-iban {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   margin: 20px 0;
   padding: 12px 24px;
   background: var(--color-card);
   border: 1px solid var(--color-border-gold);
   border-radius: 999px;
+  font-family: var(--font-body);
   font-size: 1.05rem;
   letter-spacing: 0.03em;
   color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.cadeaux-iban:hover {
+  border-color: var(--color-gold);
+  transform: translateY(-1px);
+}
+.cadeaux-iban-hint {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-gold-deep);
+}
+
+.cadeaux-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 28px;
+}
+.cadeaux-qr canvas {
+  border-radius: 12px;
+  border: 1px solid var(--color-border-gold);
+  padding: 12px;
+  background: var(--color-card);
+}
+.cadeaux-qr-caption {
+  font-size: 0.82rem;
+  color: var(--color-text-light);
+  max-width: 260px;
+  text-align: center;
+  margin: 0;
 }
 
 .contact-links {

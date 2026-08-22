@@ -158,7 +158,16 @@
       Votre présence à nos côtés est le plus beau des cadeaux. Si toutefois vous souhaitiez nous témoigner votre générosité,
       une urne sera à votre disposition le jour de la réception, ou vous pouvez faire un don sur le compte ci-dessous.
     </p>
-    <p class="cadeaux-iban">IBAN : <strong>BE06 0004 4436 8922</strong></p>
+    <button type="button" class="cadeaux-iban" id="ibanCopyBtn" aria-label="Copier l'IBAN">
+      IBAN : <strong id="ibanValue">BE06 0004 4436 8922</strong>
+      <span class="cadeaux-iban-hint" id="ibanCopyHint">Cliquer pour copier</span>
+    </button>
+
+    <div class="cadeaux-qr">
+      <div id="giftQrCanvas" class="cadeaux-qr-box"></div>
+      <p class="cadeaux-qr-caption">Scannez avec votre application bancaire pour un virement pré-rempli</p>
+    </div>
+
     <p class="cadeaux-text"><em>(Liste de mariage à venir — nous vous tiendrons informés.)</em></p>
   </div>
 </section>
@@ -199,9 +208,11 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="js/countdown.js"></script>
 <script src="js/gallery.js"></script>
 <script src="js/invitation.js"></script>
+<script src="js/gifts.js"></script>
 <script src="js/nav.js"></script>
 <script src="js/music.js"></script>
 </body>
