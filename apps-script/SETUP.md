@@ -4,24 +4,32 @@ Ceci remplace la liste d'invités par un Google Sheet que vous gérez vous-même
 
 ## 1. Créer le Google Sheet
 
+**Modèle : une ligne = un groupe** (une personne seule, un couple, ou une famille qui partage la même invitation), pas une ligne par personne. C'est le nom du groupe qui s'affiche sur l'invitation ; la recherche fonctionne aussi par prénom individuel grâce à la colonne "Noms (recherche)".
+
 1. Allez sur [sheets.google.com](https://sheets.google.com) → nouveau classeur.
 2. Renommez l'onglet du bas en **`Invités`** (exactement ce nom, avec l'accent).
 3. Sur la ligne 1, entrez ces en-têtes de colonnes, dans cet ordre exact :
 
-   | A | B | C | D | E | F | G | H | I | J |
-   |---|---|---|---|---|---|---|---|---|---|
-   | Prénom | Nom | Civil | Religieuse | Réception | Email | Statut RSVP | Nombre de personnes | Nombre d'enfants | Message |
+   | A | B | C | D | E | F | G | H | I | J | K | L | M |
+   |---|---|---|---|---|---|---|---|---|---|---|---|---|
+   | Nom du groupe | Noms (recherche) | Catégorie | Coutumier | Église | Soirée | Commune | Nombre de personnes invitées | Email | Statut RSVP | Nombre de personnes confirmées | Nombre d'enfants | Message |
 
-4. À partir de la ligne 2, ajoutez une ligne par invité. Pour les colonnes **Civil / Religieuse / Réception**, écrivez exactement `Oui` ou `Non` selon les événements auxquels chaque personne est conviée.
+4. À partir de la ligne 2, une ligne par groupe :
+   - **Nom du groupe** : ce qui s'affiche sur l'invitation (ex. `Couple Mande`, `Anderson & Mado`, ou juste `Bayo` pour une personne seule).
+   - **Noms (recherche)** : les prénoms individuels séparés par des virgules (ex. `Marie Claire, Patrick`), pour que chacun retrouve l'invitation en tapant son propre prénom. Laissez vide si le nom du groupe suffit.
+   - **Catégorie** : informatif (Famille, Amis…), non affiché sur le site.
+   - **Coutumier / Église / Soirée / Commune** : écrivez exactement `Oui` ou `Non`.
+   - **Nombre de personnes invitées** : le nombre de places prévues pour ce groupe (pré-remplit le formulaire RSVP, modifiable par l'invité).
+   - Les colonnes Email / Statut RSVP / Nombre de personnes confirmées / Nombre d'enfants / Message restent **vides** — elles se remplissent automatiquement à la confirmation.
 
    Exemple :
 
-   | Prénom | Nom | Civil | Religieuse | Réception | Email | Statut RSVP | Nombre de personnes | Nombre d'enfants | Message |
-   |---|---|---|---|---|---|---|---|---|---|
-   | Jean | Mbayo | Non | Oui | Oui | | | | | |
-   | Marie | Mbayo | Non | Oui | Non | | | | | |
+   | Nom du groupe | Noms (recherche) | Catégorie | Coutumier | Église | Soirée | Commune | Nombre de personnes invitées |
+   |---|---|---|---|---|---|---|---|
+   | Couple Mande | Marie Claire, Patrick | Famille | Oui | Oui | Oui | Oui | 2 |
+   | Bayo | | Famille (Fiancé) | Oui | Oui | Oui | Oui | 1 |
 
-   Les colonnes Email / Statut RSVP / Nombre de personnes / Nombre d'enfants / Message restent **vides** — elles se remplissent automatiquement quand l'invité confirme sa présence sur le site.
+**Import rapide depuis votre liste existante :** si vous avez déjà un fichier "Répartition invités/événements" (comme celui de test que vous m'avez donné), je peux vous générer un CSV prêt à coller dans ce Sheet, dans ce format exact, à partir de vos données réelles — dites-le-moi.
 
 ## 2. Créer le script
 

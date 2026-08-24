@@ -61,7 +61,7 @@ Si vous ajoutez d'autres photos plus tard : compressez-les d'abord (max ~1500 px
 
 ## Invitations personnalisées : architecture
 
-Plutôt qu'un site public affichant les adresses/horaires à n'importe qui, chaque invité tape son prénom ou son nom dans la section **« Trouvez votre invitation »** et découvre uniquement les événements auxquels il/elle est convié·e (civile, religieuse, réception) — comme une vraie invitation, pas une page publique.
+Plutôt qu'un site public affichant les adresses/horaires à n'importe qui, chaque invité tape son prénom (ou le nom de son groupe/famille) dans la section **« Trouvez votre invitation »** et découvre uniquement les événements auxquels son groupe est convié parmi les quatre possibles (coutumier, église, soirée, commune) — comme une vraie invitation, pas une page publique. Un couple ou une famille invités ensemble partagent la même invitation, affichée sous leur nom de groupe (ex. « Couple Mande »), tout en restant trouvable par le prénom de chacun.
 
 **Ce que ça implique techniquement :** garder une liste de ~200 invités confidentielle (qui est invité à quoi) n'est pas possible avec du HTML/CSS/JS 100 % statique — un fichier JS public serait lisible par n'importe qui via le code source. Le site s'appuie donc sur un petit backend gratuit :
 

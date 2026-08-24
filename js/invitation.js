@@ -2,10 +2,17 @@
 // Invitation personnalisée — recherche d'invité + RSVP
 //
 // Remplace l'ancien formulaire RSVP public par une expérience
-// personnalisée : l'invité tape son prénom ou son nom, retrouve
-// SA propre invitation (uniquement les événements auxquels il/elle
-// est convié·e), puis confirme sa présence directement depuis
-// cette carte.
+// personnalisée : l'invité tape son prénom (ou le nom de son
+// groupe/famille/couple), retrouve SON invitation — partagée avec
+// le reste de son groupe le cas échéant — avec uniquement les
+// événements auxquels le groupe est convié, puis confirme sa
+// présence directement depuis cette carte.
+//
+// Modèle de données : une invitation = UN GROUPE (une personne
+// seule, un couple, ou une famille). Le nom affiché sur la carte
+// est le nom du groupe (ex. "Couple Mande"), mais la recherche
+// fonctionne aussi par prénom individuel — les deux retrouvent la
+// même invitation partagée. Voir apps-script/Code.gs.
 //
 // Backend : un Google Sheet + Google Apps Script (voir
 // apps-script/SETUP.md pour la configuration complète). Tant que
@@ -25,7 +32,7 @@
   var EMAILJS_TEMPLATE_ID = 'template_8hm8yhf';
 
   var EVENTS = {
-    civil: {
+    commune: {
       icon: '💍',
       title: 'Cérémonie civile',
       place: "Hôtel de Ville d'Andenne",
@@ -33,7 +40,7 @@
       time: 'Horaire : <em>à confirmer</em>',
       note: ''
     },
-    religieuse: {
+    eglise: {
       icon: '⛪',
       title: 'Cérémonie religieuse',
       place: "Église d'Andenne",
@@ -41,7 +48,15 @@
       time: 'Horaire : <em>à confirmer</em>',
       note: "Un espace de parking est disponible à proximité de l'église."
     },
-    reception: {
+    coutumier: {
+      icon: '🌿',
+      title: 'Cérémonie coutumière',
+      place: '<em>Lieu à confirmer</em>',
+      address: '',
+      time: 'Horaire : <em>à confirmer</em>',
+      note: ''
+    },
+    soiree: {
       icon: '🥂',
       title: 'Réception',
       place: 'Prestige Event Center',
@@ -123,7 +138,7 @@
           setFeedback('');
           selectGuest(results[0].id);
         } else {
-          setFeedback('Plusieurs invités correspondent — sélectionnez votre nom :');
+          setFeedback('Plusieurs invitations correspondent — sélectionnez la vôtre :');
           renderResults(results);
         }
       })
@@ -139,7 +154,7 @@
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'guest-result-btn';
-      btn.textContent = r.prenom + ' ' + r.nom;
+      btn.textContent = r.nom;
       btn.addEventListener('click', function () {
         clearResults();
         setFeedback('');
@@ -168,7 +183,7 @@
   }
 
   function renderInvitation(guest) {
-    var invitedKeys = ['civil', 'religieuse', 'reception'].filter(function (k) { return guest[k]; });
+    var invitedKeys = ['commune', 'eglise', 'coutumier', 'soiree'].filter(function (k) { return guest[k]; });
 
     var eventsHtml = invitedKeys.map(function (k) {
       var ev = EVENTS[k];
@@ -177,17 +192,19 @@
           '<div class="detail-icon">' + ev.icon + '</div>' +
           '<h3>' + ev.title + '</h3>' +
           '<p class="detail-place">' + ev.place + '</p>' +
-          '<p class="detail-address">' + ev.address + '</p>' +
+          (ev.address ? '<p class="detail-address">' + ev.address + '</p>' : '') +
           '<p class="detail-time">' + ev.time + '</p>' +
           (ev.note ? '<p class="detail-note">' + ev.note + '</p>' : '') +
         '</div>'
       );
     }).join('');
 
+    var defaultCount = guest.nombrePersonnesInvitees || 1;
+
     card.innerHTML =
       '<div class="invitation-greeting">' +
         '<p class="eyebrow">Cher(e)</p>' +
-        '<p class="invitation-name">' + escapeHtml(guest.prenom) + ' ' + escapeHtml(guest.nom) + '</p>' +
+        '<p class="invitation-name">' + escapeHtml(guest.nomGroupe) + '</p>' +
       '</div>' +
       '<p class="invitation-formula">Avec la bénédiction de Dieu et entourés de leurs familles, Eunice &amp; Eugène ont la joie de vous convier :</p>' +
       '<div class="invitation-events">' + eventsHtml + '</div>' +
@@ -201,12 +218,12 @@
           '</select>' +
         '</div>' +
         '<div class="form-row">' +
-          '<label for="guestCount">Nombre de personnes (vous inclus(e)) *</label>' +
-          '<input type="number" id="guestCount" min="1" max="10" value="1" required>' +
+          '<label for="guestCount">Nombre de personnes de votre groupe qui viendront *</label>' +
+          '<input type="number" id="guestCount" min="0" max="20" value="' + escapeHtml(String(defaultCount)) + '" required>' +
         '</div>' +
         '<div class="form-row">' +
           '<label for="guestChildren">Dont nombre d\'enfants</label>' +
-          '<input type="number" id="guestChildren" min="0" max="10" value="0">' +
+          '<input type="number" id="guestChildren" min="0" max="20" value="0">' +
         '</div>' +
         '<div class="form-row">' +
           '<label for="guestEmail">Votre email</label>' +
@@ -219,7 +236,7 @@
         '</div>' +
         '<button type="submit" class="btn btn-primary" id="guestRsvpSubmit">Envoyer ma confirmation</button>' +
         '<p class="rsvp-feedback" id="guestRsvpFeedback" role="status"></p>' +
-        '<p class="rsvp-note">Votre réponse est enregistrée directement pour Eunice et Eugène. Aucune liste publique n\'est constituée.</p>' +
+        '<p class="rsvp-note">Une seule confirmation par groupe suffit. Votre réponse est enregistrée directement pour Eunice et Eugène. Aucune liste publique n\'est constituée.</p>' +
       '</form>';
 
     card.hidden = false;
@@ -254,7 +271,7 @@
           // Notification email indépendante (best effort).
           if (isConfigured && window.emailjs) {
             window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-              nom: guest.prenom + ' ' + guest.nom,
+              nom: guest.nomGroupe,
               presence: payload.presence,
               nombre_personnes: payload.nombrePersonnes,
               nombre_enfants: payload.nombreEnfants,

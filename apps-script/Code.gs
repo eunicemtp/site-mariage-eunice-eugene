@@ -6,11 +6,21 @@
  * marche à suivre complète : création du Sheet, des colonnes, et
  * déploiement en Web App).
  *
+ * Modèle : UNE LIGNE PAR GROUPE (un groupe = une personne seule, un
+ * couple, ou une famille qui partage la même invitation). La
+ * recherche se fait par prénom individuel (colonne "Noms") OU par
+ * nom du groupe — les deux ramènent à la même invitation partagée.
+ *
  * Colonnes attendues dans l'onglet "Invités" (ligne 1 = en-têtes) :
- *   A: Prénom          B: Nom             C: Civil (Oui/Non)
- *   D: Religieuse (Oui/Non)               E: Réception (Oui/Non)
- *   F: Email            G: Statut RSVP     H: Nombre de personnes
- *   I: Nombre d'enfants J: Message
+ *   A: Nom du groupe        (affiché sur l'invitation, ex. "Couple Mande")
+ *   B: Noms (recherche)     (prénoms individuels séparés par virgules, ex. "Marie Claire, Patrick")
+ *   C: Catégorie            (ex. Famille, Amis — informatif)
+ *   D: Coutumier (Oui/Non)  E: Église (Oui/Non)
+ *   F: Soirée (Oui/Non)     G: Commune (Oui/Non)
+ *   H: Nombre de personnes invitées
+ *   I: Email                J: Statut RSVP
+ *   K: Nombre de personnes confirmées
+ *   L: Nombre d'enfants     M: Message
  */
 
 var SHEET_NAME = 'Invités';
@@ -49,19 +59,22 @@ function getAllRows() {
   var rows = [];
   for (var i = 1; i < values.length; i++) {
     var r = values[i];
-    if (!r[0] && !r[1]) continue;
+    if (!r[0]) continue;
     rows.push({
       id: i + 1,
-      prenom: String(r[0] || ''),
-      nom: String(r[1] || ''),
-      civil: normalizeBool(r[2]),
-      religieuse: normalizeBool(r[3]),
-      reception: normalizeBool(r[4]),
-      email: String(r[5] || ''),
-      statut: String(r[6] || ''),
-      nombrePersonnes: r[7] || '',
-      nombreEnfants: r[8] || '',
-      message: String(r[9] || '')
+      nomGroupe: String(r[0] || ''),
+      noms: String(r[1] || ''),
+      categorie: String(r[2] || ''),
+      coutumier: normalizeBool(r[3]),
+      eglise: normalizeBool(r[4]),
+      soiree: normalizeBool(r[5]),
+      commune: normalizeBool(r[6]),
+      nombrePersonnesInvitees: r[7] || '',
+      email: String(r[8] || ''),
+      statut: String(r[9] || ''),
+      nombrePersonnesConfirmees: r[10] || '',
+      nombreEnfants: r[11] || '',
+      message: String(r[12] || '')
     });
   }
   return rows;
@@ -71,29 +84,31 @@ function normalizeBool(v) {
   return String(v).trim().toLowerCase() === 'oui';
 }
 
-// Recherche large (prénom OU nom), ne renvoie QUE le strict nécessaire
-// à la désambiguïsation — jamais l'email, le statut RSVP ou les
-// événements des autres invités.
+// Recherche large : nom du groupe OU un des prénoms individuels
+// listés dans "Noms (recherche)". Ne renvoie QUE le strict
+// nécessaire à la désambiguïsation — jamais l'email, le statut
+// RSVP ou les événements des autres groupes.
 function searchGuests(query) {
   query = String(query).trim().toLowerCase();
   if (!query) return { results: [] };
 
   var results = getAllRows()
     .filter(function (r) {
-      return r.prenom.toLowerCase().indexOf(query) !== -1 ||
-             r.nom.toLowerCase().indexOf(query) !== -1;
+      if (r.nomGroupe.toLowerCase().indexOf(query) !== -1) return true;
+      var noms = r.noms.split(',').map(function (n) { return n.trim().toLowerCase(); });
+      return noms.some(function (n) { return n && n.indexOf(query) !== -1; });
     })
     .map(function (r) {
-      return { id: r.id, prenom: r.prenom, nom: r.nom };
+      return { id: r.id, nom: r.nomGroupe };
     });
 
   return { results: results };
 }
 
-// Renvoie l'invitation complète d'UN SEUL invité (jamais la liste).
+// Renvoie l'invitation complète d'UN SEUL groupe (jamais la liste).
 function getGuest(id) {
   var guest = getAllRows().filter(function (r) { return r.id === id; })[0];
-  if (!guest) return { error: 'Invité introuvable.' };
+  if (!guest) return { error: 'Invitation introuvable.' };
   return { guest: guest };
 }
 
@@ -102,11 +117,11 @@ function saveRsvp(body) {
   var row = Number(body.id);
   if (!row || row < 2) return { error: 'ID invalide.' };
 
-  sheet.getRange(row, 6).setValue(body.email || '');
-  sheet.getRange(row, 7).setValue(body.presence || '');
-  sheet.getRange(row, 8).setValue(body.nombrePersonnes || '');
-  sheet.getRange(row, 9).setValue(body.nombreEnfants || '');
-  sheet.getRange(row, 10).setValue(body.message || '');
+  sheet.getRange(row, 9).setValue(body.email || '');
+  sheet.getRange(row, 10).setValue(body.presence || '');
+  sheet.getRange(row, 11).setValue(body.nombrePersonnes || '');
+  sheet.getRange(row, 12).setValue(body.nombreEnfants || '');
+  sheet.getRange(row, 13).setValue(body.message || '');
 
   return { ok: true };
 }
