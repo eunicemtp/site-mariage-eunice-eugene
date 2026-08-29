@@ -7,18 +7,27 @@
  * déploiement en Web App).
  *
  * Modèle : UNE LIGNE PAR GROUPE (un groupe = une personne seule, un
- * couple, ou une famille qui partage la même invitation). La
- * recherche se fait par prénom individuel (colonne "Noms") OU par
- * nom du groupe — les deux ramènent à la même invitation partagée.
+ * couple, ou une famille qui partage la même invitation). L'invité
+ * tape son prénom (ou le nom de son groupe) ET une adresse email.
+ *
+ * Protection choisie : PAS de vérification préalable de l'email
+ * (aucune inscription à l'avance nécessaire), mais VERROUILLAGE AU
+ * PREMIER ENVOI — le premier email utilisé pour une invitation
+ * donnée s'enregistre dans la colonne Email et devient la seule
+ * adresse acceptée ensuite pour cette même invitation. Ce n'est PAS
+ * une protection parfaite (la toute première personne à taper un
+ * nom, même indiscrète, peut verrouiller l'invitation à sa propre
+ * adresse avant l'invité réel) mais ça empêche toute consultation
+ * répétée par des tiers une fois l'invitation réclamée.
  *
  * Colonnes attendues dans l'onglet "Invités" (ligne 1 = en-têtes) :
  *   A: Nom du groupe        (affiché sur l'invitation, ex. "Couple Mande")
- *   B: Noms (recherche)     (prénoms individuels séparés par virgules, ex. "Marie Claire, Patrick")
+ *   B: Noms (recherche)     (prénoms individuels séparés par virgules)
  *   C: Catégorie            (ex. Famille, Amis — informatif)
  *   D: Coutumier (Oui/Non)  E: Église (Oui/Non)
  *   F: Soirée (Oui/Non)     G: Commune (Oui/Non)
  *   H: Nombre de personnes invitées
- *   I: Email                J: Statut RSVP
+ *   I: Email (verrouillage) J: Statut RSVP
  *   K: Nombre de personnes confirmées
  *   L: Nombre d'enfants     M: Message
  */
@@ -30,8 +39,8 @@ function doGet(e) {
   if (action === 'search') {
     return respond(searchGuests(e.parameter.q || ''));
   }
-  if (action === 'get') {
-    return respond(getGuest(Number(e.parameter.id)));
+  if (action === 'unlock') {
+    return respond(unlockGuest(Number(e.parameter.id), e.parameter.email || ''));
   }
   return respond({ error: 'Action inconnue.' });
 }
@@ -84,10 +93,9 @@ function normalizeBool(v) {
   return String(v).trim().toLowerCase() === 'oui';
 }
 
-// Recherche large : nom du groupe OU un des prénoms individuels
-// listés dans "Noms (recherche)". Ne renvoie QUE le strict
-// nécessaire à la désambiguïsation — jamais l'email, le statut
-// RSVP ou les événements des autres groupes.
+// Recherche large : nom du groupe OU un des prénoms individuels.
+// Ne renvoie QUE le strict nécessaire à la désambiguïsation —
+// jamais l'email, le statut RSVP ou les événements.
 function searchGuests(query) {
   query = String(query).trim().toLowerCase();
   if (!query) return { results: [] };
@@ -105,10 +113,27 @@ function searchGuests(query) {
   return { results: results };
 }
 
-// Renvoie l'invitation complète d'UN SEUL groupe (jamais la liste).
-function getGuest(id) {
-  var guest = getAllRows().filter(function (r) { return r.id === id; })[0];
+// Verrouille (ou vérifie) l'email pour UN SEUL groupe, puis renvoie
+// son invitation complète. Jamais la liste des autres invités.
+function unlockGuest(id, email) {
+  email = String(email).trim().toLowerCase();
+  if (!email) return { error: 'Adresse email requise.' };
+
+  var sheet = getSheet();
+  var rows = getAllRows();
+  var guest = rows.filter(function (r) { return r.id === id; })[0];
   if (!guest) return { error: 'Invitation introuvable.' };
+
+  var lockedEmail = guest.email.trim().toLowerCase();
+
+  if (!lockedEmail) {
+    // Première réclamation : on verrouille cette adresse.
+    sheet.getRange(id, 9).setValue(email);
+    guest.email = email;
+  } else if (lockedEmail !== email) {
+    return { error: "Cette invitation a déjà été envoyée à une autre adresse email. Si c'est une erreur, contactez-nous directement." };
+  }
+
   return { guest: guest };
 }
 
@@ -117,7 +142,6 @@ function saveRsvp(body) {
   var row = Number(body.id);
   if (!row || row < 2) return { error: 'ID invalide.' };
 
-  sheet.getRange(row, 9).setValue(body.email || '');
   sheet.getRange(row, 10).setValue(body.presence || '');
   sheet.getRange(row, 11).setValue(body.nombrePersonnes || '');
   sheet.getRange(row, 12).setValue(body.nombreEnfants || '');

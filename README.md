@@ -37,7 +37,8 @@ Aucune commande `npm install` ni build n'est nécessaire — vous éditez les fi
 Le site contient volontairement des placeholders explicites à remplacer :
 
 - [ ] **Google Sheet + Apps Script** : créer la liste d'invités et déployer le backend — voir [`apps-script/SETUP.md`](apps-script/SETUP.md). Une fois l'URL obtenue, la coller dans `js/invitation.js` (constante `APPS_SCRIPT_URL`). Sans ça, la recherche d'invitation affiche un message d'erreur au lieu de planter.
-- [ ] **EmailJS** : les 3 identifiants sont déjà renseignés en haut de `js/invitation.js` (notification email en parallèle du Google Sheet) — à revérifier si vous changez de compte.
+- [ ] **EmailJS (notification RSVP)** : les 3 identifiants sont déjà renseignés en haut de `js/invitation.js` — à revérifier si vous changez de compte.
+- [ ] **EmailJS (envoi de l'invitation à l'invité)** : créer un second template (voir `apps-script/SETUP.md`) et coller son ID dans `EMAILJS_INVITATION_TEMPLATE_ID` (`js/invitation.js`). Sans ça, l'invitation s'affiche quand même à l'écran mais n'est pas envoyée par email.
 - [ ] **Email de contact** : remplacer `VOTRE-EMAIL@a-remplacer.be` dans `index.html` (section `#contact`) par votre adresse définitive, une fois créée avec le domaine.
 - [ ] **Horaires exacts** des cérémonies (actuellement « à confirmer ») dans `js/invitation.js`, objet `EVENTS` en haut du fichier.
 - [ ] **Heure exacte** dans `js/countdown.js` (actuellement `10h00` par défaut, ligne `WEDDING_DATE`).
@@ -63,19 +64,28 @@ Si vous ajoutez d'autres photos plus tard : compressez-les d'abord (max ~1500 px
 
 Plutôt qu'un site public affichant les adresses/horaires à n'importe qui, chaque invité tape son prénom (ou le nom de son groupe/famille) dans la section **« Trouvez votre invitation »** et découvre uniquement les événements auxquels son groupe est convié parmi les quatre possibles (coutumier, église, soirée, commune) — comme une vraie invitation, pas une page publique. Un couple ou une famille invités ensemble partagent la même invitation, affichée sous leur nom de groupe (ex. « Couple Mande »), tout en restant trouvable par le prénom de chacun.
 
-**Ce que ça implique techniquement :** garder une liste de ~200 invités confidentielle (qui est invité à quoi) n'est pas possible avec du HTML/CSS/JS 100 % statique — un fichier JS public serait lisible par n'importe qui via le code source. Le site s'appuie donc sur un petit backend gratuit :
+**Ce que ça implique techniquement :** garder une liste de ~157 groupes/305 personnes confidentielle (qui est invité à quoi) n'est pas possible avec du HTML/CSS/JS 100 % statique — un fichier JS public serait lisible par n'importe qui via le code source. Le site s'appuie donc sur un petit backend gratuit :
 
-- **Google Sheet** : la liste d'invités, que vous éditez vous-même comme un tableau normal (Prénom, Nom, quels événements, email, statut RSVP…).
-- **Google Apps Script** : un petit script (gratuit, pas de serveur à payer) qui expose ce Sheet au site sous forme d'API — recherche par nom, récupération d'une invitation, enregistrement d'une réponse RSVP.
-- Le script ne renvoie **jamais** la liste complète : une recherche ne renvoie que les noms correspondant à ce qui a été tapé, et le détail d'une invitation n'est renvoyé que pour la personne sélectionnée.
+- **Google Sheet** : la liste d'invités (un groupe par ligne — personne seule, couple, ou famille), que vous éditez vous-même comme un tableau normal.
+- **Google Apps Script** : un petit script (gratuit, pas de serveur à payer) qui expose ce Sheet au site sous forme d'API — recherche par nom, déblocage d'une invitation, enregistrement d'une réponse RSVP.
+- Le script ne renvoie **jamais** la liste complète : une recherche ne renvoie que les noms correspondant à ce qui a été tapé, et le détail d'une invitation n'est renvoyé que pour le groupe sélectionné.
+
+**Protection par email (verrouillage au premier envoi) :** en plus du nom, l'invité doit fournir un email pour débloquer son invitation. La première adresse utilisée pour une invitation donnée devient la seule acceptée ensuite — toute autre adresse est refusée. Ce n'est pas une vérification a priori (rien n'empêche la toute première personne à taper un nom d'utiliser sa propre adresse), d'où la note affichée sur le site invitant chacun à ne consulter que sa propre invitation. Détails dans [`apps-script/SETUP.md`](apps-script/SETUP.md).
 
 **Configuration complète (Sheet + script + déploiement) : voir [`apps-script/SETUP.md`](apps-script/SETUP.md).** Une fois l'URL du script obtenue, collez-la dans `js/invitation.js` (`APPS_SCRIPT_URL`, en haut du fichier).
 
+### Réception de l'invitation : écran, email, image, PDF
+
+Une fois l'invitation débloquée (nom + email) :
+- Elle s'affiche directement à l'écran, avec uniquement les événements du groupe.
+- Une copie est envoyée par email à l'adresse fournie (second template EmailJS dédié — voir SETUP.md).
+- L'invité peut la télécharger en **image (PNG)** ou en **PDF** directement depuis la page (génération côté navigateur avec html2canvas + jsPDF, aucun envoi de données à un tiers pour ça).
+
 ### RSVP intégré + notification email (EmailJS)
 
-Le RSVP n'est plus un formulaire public séparé : il apparaît directement dans l'invitation personnalisée, une fois l'invité identifié. À la soumission, deux choses se passent en parallèle (indépendantes — si l'une échoue, l'autre peut quand même réussir) :
+Le RSVP n'est plus un formulaire public séparé : il apparaît directement dans l'invitation personnalisée, une fois l'invité identifié (l'email n'est pas redemandé, il a déjà été fourni pour débloquer l'invitation). À la soumission, deux choses se passent en parallèle (indépendantes — si l'une échoue, l'autre peut quand même réussir) :
 
-1. La réponse est enregistrée dans le Google Sheet (colonnes Email / Statut RSVP / Nombre de personnes / Message de la ligne correspondante).
+1. La réponse est enregistrée dans le Google Sheet (colonnes Statut RSVP / Nombre de personnes / Nombre d'enfants / Message de la ligne correspondante).
 2. Une notification est envoyée par email via [EmailJS](https://www.emailjs.com) (déjà configuré dans `js/invitation.js` avec vos identifiants existants) pour être prévenu instantanément.
 
 ### Newsletter (mises à jour + photos après le mariage)
@@ -114,9 +124,10 @@ Cela suppose que `eunice-mutope-nkongolo.be` est un domaine que vous possédez d
 
 ## Poids de page
 
-- Aucune librairie externe chargée sauf les polices Google Fonts (`Cormorant Garamond` + `Jost`, ~30 Ko), avec repli sur polices système si indisponible.
+- Polices Google Fonts (`Cormorant Garamond` + `Jost`, ~30 Ko), avec repli sur polices système si indisponible.
 - 9 photos compressées : ~1,3 Mo au total.
-- Zéro framework JS, code natif uniquement (~4 Ko de JS au total).
+- Code natif uniquement pour le site lui-même (~6 Ko de JS).
+- Quelques librairies externes légères chargées via CDN pour des fonctionnalités précises (EmailJS, QR code cadeaux, lecteur musique YouTube) plus **html2canvas + jsPDF** (~200 Ko à elles deux) pour le téléchargement image/PDF de l'invitation — chargées une seule fois, mises en cache par le navigateur après la première visite.
 
 ## Vérification responsive
 

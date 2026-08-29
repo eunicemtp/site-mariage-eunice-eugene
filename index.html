@@ -57,7 +57,7 @@
         </div>
       </div>
 
-      <a href="#invitation" class="btn btn-primary hero-cta">Trouver mon invitation</a>
+      <a href="#invitation" class="btn btn-primary hero-cta">Mon invitation</a>
     </div>
 
     <div class="hero-media">
@@ -84,18 +84,21 @@
   </div>
 </section>
 
-<!-- ===== TROUVEZ VOTRE INVITATION ===== -->
+<!-- ===== VOTRE INVITATION ===== -->
 <section class="section section-alt" id="invitation">
   <div class="container narrow center">
     <p class="eyebrow">Votre invitation</p>
     <h2 class="section-title">Trouvez votre invitation</h2>
     <div class="divider"><span class="divider-mark">✦</span></div>
-    <p class="invitation-intro">Entrez votre prénom ou votre nom pour découvrir votre invitation personnalisée et confirmer votre présence.</p>
+    <p class="invitation-intro">Entrez votre prénom (ou le nom de votre famille/couple) et votre email pour recevoir votre invitation personnalisée.</p>
 
     <form id="guestSearchForm" class="guest-search-form">
-      <input type="text" id="guestSearchInput" placeholder="Votre prénom ou nom" autocomplete="off" required>
-      <button type="submit" class="btn btn-primary">Rechercher</button>
+      <input type="text" id="guestSearchInput" placeholder="Votre prénom ou nom" autocomplete="name" required>
+      <input type="email" id="guestEmailInput" placeholder="Votre email" autocomplete="email" required>
+      <button type="submit" class="btn btn-primary">Recevoir mon invitation</button>
     </form>
+
+    <p class="invitation-lock-note">⚠️ La première adresse email utilisée pour une invitation est définitive : une fois envoyée, cette invitation ne pourra plus être envoyée à une autre adresse. Merci de ne pas consulter ou télécharger l'invitation d'un autre invité.</p>
 
     <p class="guest-search-feedback" id="guestSearchFeedback" role="status"></p>
 
@@ -209,6 +212,8 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="js/countdown.js"></script>
 <script src="js/gallery.js"></script>
 <script src="js/invitation.js"></script>

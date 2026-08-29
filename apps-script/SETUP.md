@@ -60,3 +60,26 @@ Ouvrez simplement le Google Sheet et éditez les lignes — ajout d'invité, cha
 ## Confidentialité
 
 Le script ne renvoie jamais la liste complète des invités au site : une recherche ne renvoie que les prénoms/noms correspondant à ce qui a été tapé (pour la désambiguïsation), et l'invitation détaillée (adresses, statut RSVP...) n'est renvoyée que pour **un seul invité à la fois**, après sélection.
+
+**Verrouillage par email :** en plus du nom, l'invité doit fournir un email pour débloquer son invitation. La **première** adresse utilisée pour une invitation donnée s'enregistre dans la colonne Email et devient la seule acceptée ensuite pour cette même invitation (toute autre adresse est refusée avec un message clair). Ce n'est pas une vérification a priori — rien n'empêche la toute première personne qui tape un nom d'utiliser sa propre adresse — mais ça empêche la consultation répétée par des tiers une fois l'invitation réclamée par le bon invité. Une note est affichée sur le site pour dissuader toute consultation de l'invitation d'quelqu'un d'autre.
+
+## Envoyer l'invitation par email (deuxième template EmailJS)
+
+En plus du template EmailJS existant (qui vous notifie, vous, à chaque RSVP), il en faut un **second**, dédié à l'envoi de l'invitation à l'invité lui-même :
+
+1. Dans votre dashboard EmailJS → **Email Templates** → *Create New Template*.
+2. Onglet **Settings** du template → champ **"To Email"** → mettez `{{to_email}}` (une variable, pas une adresse fixe cette fois — c'est ce qui permet d'envoyer à l'adresse de chaque invité).
+3. Dans le corps du template, utilisez les variables :
+   ```
+   Nom : {{nom}}
+   Événements : {{evenements}}
+   ```
+   Vous pouvez reprendre la mise en forme HTML de [emailjs-template.html](../emailjs-template.html) comme point de départ, adaptée à ce contenu.
+4. Notez le **Template ID** de ce nouveau template.
+5. Ouvrez `js/invitation.js` et remplacez le placeholder :
+   ```js
+   var EMAILJS_INVITATION_TEMPLATE_ID = 'COLLEZ_VOTRE_TEMPLATE_INVITATION';
+   ```
+   par l'ID obtenu.
+
+Tant que ce champ reste un placeholder, l'invitation s'affiche normalement à l'écran mais aucun email n'est envoyé (pas d'erreur visible pour l'invité).

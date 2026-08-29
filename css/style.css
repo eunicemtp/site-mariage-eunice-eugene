@@ -494,7 +494,6 @@ p { margin: 0 0 1em; }
   font-size: 1rem;
   background: var(--color-card);
   color: var(--color-text);
-  text-align: center;
 }
 .guest-search-form input:focus {
   outline: none;
@@ -502,12 +501,12 @@ p { margin: 0 0 1em; }
 }
 .guest-search-form .btn { border: none; }
 
-@media (min-width: 560px) {
-  .guest-search-form {
-    flex-direction: row;
-  }
-  .guest-search-form input { flex: 1; text-align: left; }
-  .guest-search-form .btn { flex-shrink: 0; }
+.invitation-lock-note {
+  max-width: 460px;
+  margin: 18px auto 0;
+  font-size: 0.8rem;
+  color: var(--color-gold-deep);
+  line-height: 1.5;
 }
 
 .guest-search-feedback {
@@ -581,11 +580,29 @@ p { margin: 0 0 1em; }
   }
 }
 
-.invitation-newsletter-note {
-  font-size: 0.85rem;
+.invitation-sent-note {
+  text-align: center;
+  font-size: 0.9rem;
   color: var(--color-gold-deep);
-  margin-top: -8px;
   margin-bottom: 20px;
+}
+
+.invitation-download-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-gold-deep);
+  border: 1px solid var(--color-border-gold);
+}
+.btn-secondary:hover {
+  border-color: var(--color-gold);
+  background: var(--color-card);
 }
 
 /* ===== CADEAUX / CONTACT ===== */
