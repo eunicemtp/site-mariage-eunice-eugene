@@ -27,22 +27,27 @@
   var EMAILJS_RSVP_TEMPLATE_ID = 'template_8hm8yhf'; // notifie Eunice & Eugène à chaque RSVP
   var EMAILJS_INVITATION_TEMPLATE_ID = 'COLLEZ_VOTRE_TEMPLATE_INVITATION'; // envoie l'invitation à l'invité (To Email = {{to_email}})
 
+  // Lien Google Maps (marche à pied) du parking gratuit vers la salle,
+  // construit à partir des adresses réelles indiquées sur le carton
+  // "Accès & Parking" — reproduit le trajet du QR code papier.
+  var PARKING_MAPS_URL = 'https://www.google.com/maps/dir/?api=1&origin=Parking+Charleroi+Expo,+Boulevard+Solvay,+6000+Charleroi&destination=Boulevard+Paul+Janson+5,+6000+Charleroi&travelmode=walking';
+
   var EVENTS = {
     commune: {
       icon: '💍',
       title: 'Cérémonie civile',
-      place: "Hôtel de Ville d'Andenne",
-      address: 'Place des Tilleuls 1<br>5300 Andenne',
-      time: 'Horaire : <em>à confirmer</em>',
-      note: ''
+      place: 'Place du Chapitre 9',
+      address: '5300 Andenne',
+      time: 'Horaire : 10h00',
+      note: 'Parking accessible à proximité.'
     },
     eglise: {
       icon: '⛪',
       title: 'Cérémonie religieuse',
-      place: "Église d'Andenne",
+      place: 'Église ADN',
       address: 'Rue de la Justice 11<br>5300 Andenne',
-      time: 'Horaire : <em>à confirmer</em>',
-      note: "Un espace de parking est disponible à proximité de l'église."
+      time: 'Horaire : 13h30',
+      note: 'Parking accessible à proximité.'
     },
     coutumier: {
       icon: '🌿',
@@ -57,8 +62,8 @@
       title: 'Réception',
       place: 'Prestige Event Center',
       address: 'Boulevard Paul Janson 5<br>6000 Charleroi',
-      time: 'Horaire : <em>à confirmer</em>',
-      note: 'Un parking se trouve à proximité immédiate du Prestige Event Center. Fléchage et accès précis communiqués prochainement — merci de prévoir large en cas d\'affluence.'
+      time: 'Horaire : 18h00',
+      note: 'Parking gratuit au Parking Charleroi Expo (Bd Solvay, 6000 Charleroi), à environ 300 m (4-5 min à pied) de la salle — suivez le Boulevard Paul Janson jusqu\'au n°5. <a href="' + PARKING_MAPS_URL + '" target="_blank" rel="noopener">Itinéraire à pied (Google Maps)</a>'
     }
   };
 
@@ -198,15 +203,29 @@
     function sendInvitationEmail(guest, email) {
       if (!isConfigured || !window.emailjs || EMAILJS_INVITATION_TEMPLATE_ID.indexOf('COLLEZ_') === 0) return;
 
-      var invitedLabels = ['commune', 'eglise', 'coutumier', 'soiree']
-        .filter(function (k) { return guest[k]; })
-        .map(function (k) { return EVENTS[k].title; })
-        .join(', ');
+      var invitedKeys = ['commune', 'eglise', 'coutumier', 'soiree'].filter(function (k) { return guest[k]; });
+
+      var invitedLabels = invitedKeys.map(function (k) { return EVENTS[k].title; }).join(', ');
+
+      // Bloc HTML détaillé (adresse, horaire, parking) inséré tel
+      // quel dans le template EmailJS via {{{evenements_detail}}}
+      // (triple accolade = HTML brut, pas d'échappement).
+      var evenementsDetailHtml = invitedKeys.map(function (k) {
+        var ev = EVENTS[k];
+        return (
+          '<tr><td style="padding:14px 0;border-bottom:1px solid #E3DACB;">' +
+            '<div style="font-family:Arial,sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#8C6A35;margin-bottom:4px;">' + ev.icon + ' ' + ev.title + '</div>' +
+            '<div style="font-family:Arial,sans-serif;font-size:15px;color:#221E19;font-weight:bold;">' + ev.place + (ev.address ? ', ' + ev.address.replace(/<br>/g, ', ') : '') + '</div>' +
+            '<div style="font-family:Arial,sans-serif;font-size:13px;color:#6E6858;margin-top:2px;">' + ev.time + (ev.note ? ' · ' + ev.note : '') + '</div>' +
+          '</td></tr>'
+        );
+      }).join('');
 
       window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_INVITATION_TEMPLATE_ID, {
         to_email: email,
         nom: guest.nomGroupe,
-        evenements: invitedLabels
+        evenements: invitedLabels,
+        evenements_detail: '<table role="presentation" width="100%" cellpadding="0" cellspacing="0">' + evenementsDetailHtml + '</table>'
       }).catch(function () { /* le téléchargement reste possible même si l'email échoue */ });
     }
 
@@ -237,8 +256,9 @@
           '<p class="eyebrow">Cher(e)</p>' +
           '<p class="invitation-name">' + escapeHtml(guest.nomGroupe) + '</p>' +
         '</div>' +
-        '<p class="invitation-formula">Avec la bénédiction de Dieu et entourés de leurs familles, Eunice &amp; Eugène ont la joie de vous convier :</p>' +
-        '<div class="invitation-events">' + eventsHtml + '</div>';
+        '<p class="invitation-formula">Les familles Nkongolo et Béavogui ont le plaisir de vous convier à la célébration du mariage de Eunice &amp; Eugène :</p>' +
+        '<div class="invitation-events">' + eventsHtml + '</div>' +
+        '<p class="invitation-rsvp-deadline">Merci de confirmer votre présence avant le 1er octobre 2026.</p>';
       document.body.appendChild(offscreen);
 
       html2canvas(offscreen, { backgroundColor: '#FAF6F0', scale: 2 }).then(function (canvas) {

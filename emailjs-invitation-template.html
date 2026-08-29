@@ -11,7 +11,13 @@
   <!DOCTYPE>/<head>/<body>) dans l'onglet "Content" du template,
   en mode édition HTML/code.
 
-  Variables utilisées : {{nom}}, {{evenements}}
+  Variables utilisées :
+    {{nom}}                → nom du groupe/invité
+    {{evenements}}          → liste courte (texte brut), pas utilisée
+                              dans ce template mais dispo si besoin
+    {{{evenements_detail}}} → bloc HTML détaillé (adresse, horaire,
+                              parking) — TRIPLE accolades obligatoires
+                              (sinon EmailJS échappe le HTML en texte brut)
   Champ "To email" du template (onglet Settings) : {{to_email}}
     (variable, PAS une adresse fixe — c'est ce qui permet d'envoyer
     à l'adresse de chaque invité plutôt qu'à vous)
@@ -46,21 +52,16 @@
             <div style="font-family:Georgia, 'Times New Roman', serif; font-size:20px; color:#221E19; margin-bottom:4px;">
               Cher(e) {{nom}},
             </div>
-            <div style="font-family:Arial, sans-serif; font-size:15px; color:#6E6858; line-height:1.7; margin-bottom:24px;">
-              Avec la bénédiction de Dieu et entourés de leurs familles, Eunice &amp; Eugène ont la joie de vous convier à célébrer leur mariage.
+            <div style="font-family:Arial, sans-serif; font-size:15px; color:#6E6858; line-height:1.7; margin-bottom:20px;">
+              Les familles Nkongolo et Béavogui ont le plaisir de vous convier à la célébration du mariage de Eunice &amp; Eugène :
             </div>
 
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F1ECE2; border-radius:8px; border:1px solid #E3DACB;">
-              <tr>
-                <td style="padding:18px 20px;">
-                  <div style="font-family:Arial, sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#8C6A35; margin-bottom:6px;">Vous êtes convié·e à</div>
-                  <div style="font-family:Arial, sans-serif; font-size:16px; color:#221E19; font-weight:bold;">{{evenements}}</div>
-                </td>
-              </tr>
-            </table>
+            <div style="background-color:#F1ECE2; border-radius:8px; border:1px solid #E3DACB; padding:4px 20px;">
+              {{{evenements_detail}}}
+            </div>
 
             <div style="font-family:Arial, sans-serif; font-size:13px; color:#6E6858; line-height:1.6; margin-top:20px;">
-              Adresses, horaires et informations pratiques précisés séparément. Merci de confirmer votre présence avant le <strong>1er octobre 2026</strong>.
+              Merci de confirmer votre présence avant le <strong>1er octobre 2026</strong>.
             </div>
 
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;">

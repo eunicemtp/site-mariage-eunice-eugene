@@ -341,6 +341,17 @@ p { margin: 0 0 1em; }
   color: var(--color-text-light);
   margin-bottom: 0;
 }
+.detail-note a {
+  color: var(--color-gold-deep);
+  text-decoration: underline;
+}
+
+.invitation-rsvp-deadline {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  margin-top: 4px;
+}
 
 .details-footnote {
   text-align: center;

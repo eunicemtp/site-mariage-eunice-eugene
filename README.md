@@ -37,15 +37,14 @@ Aucune commande `npm install` ni build n'est nécessaire — vous éditez les fi
 
 Le site contient volontairement des placeholders explicites à remplacer :
 
-- [ ] **Google Sheet + Apps Script** : créer la liste d'invités et déployer le backend — voir [`apps-script/SETUP.md`](apps-script/SETUP.md). Une fois l'URL obtenue, la coller dans `js/invitation.js` (constante `APPS_SCRIPT_URL`). Sans ça, la recherche d'invitation affiche un message d'erreur au lieu de planter.
-- [ ] **EmailJS (notification RSVP)** : les 3 identifiants sont déjà renseignés en haut de `js/invitation.js` — à revérifier si vous changez de compte.
-- [ ] **EmailJS (envoi de l'invitation à l'invité)** : créer un second template (voir `apps-script/SETUP.md`) et coller son ID dans `EMAILJS_INVITATION_TEMPLATE_ID` (`js/invitation.js`). Sans ça, l'invitation s'affiche quand même à l'écran mais n'est pas envoyée par email.
+- [x] **Google Sheet + Apps Script** : backend déployé et connecté (`APPS_SCRIPT_URL` dans `js/invitation.js`), testé de bout en bout.
+- [x] **EmailJS (notification RSVP)** : configuré.
+- [x] **Adresses, horaires, parking** des 3 cérémonies (civile, religieuse, réception) : renseignés dans `js/invitation.js` (objet `EVENTS`), repris du carton d'invitation officiel — y compris l'itinéraire à pied depuis le Parking Charleroi Expo pour la réception.
+- [ ] **Cérémonie coutumière** : toujours « à confirmer » (objet `EVENTS`, clé `coutumier`) — aucune adresse/horaire ne figurait sur le carton d'invitation fourni. Si elle a lieu séparément, dites-moi les détails ou laissez `Oui`/`Non` à jour dans le Google Sheet selon les groupes concernés.
+- [ ] **EmailJS (envoi de l'invitation à l'invité)** : créer un second template (voir `apps-script/SETUP.md`) et coller son ID dans `EMAILJS_INVITATION_TEMPLATE_ID` (`js/invitation.js`). Sans ça, le téléchargement image/PDF fonctionne quand même, mais l'email n'est pas envoyé.
 - [ ] **Email de contact** : remplacer `VOTRE-EMAIL@a-remplacer.be` dans `index.html` (section `#contact`) par votre adresse définitive, une fois créée avec le domaine.
-- [ ] **Horaires exacts** des cérémonies (actuellement « à confirmer ») dans `js/invitation.js`, objet `EVENTS` en haut du fichier.
-- [ ] **Heure exacte** dans `js/countdown.js` (actuellement `10h00` par défaut, ligne `WEDDING_DATE`).
-- [ ] **Détails parking** (accès précis, fléchage) — j'ai laissé un texte générique honnête plutôt que d'inventer des informations que je ne pouvais pas vérifier ; complétez-les vous-même dans `js/invitation.js` (objet `EVENTS`).
 - [ ] **Section cadeaux** : à personnaliser ou remplacer par un lien de liste de mariage si vous en créez une.
-- [ ] **Nom de domaine final** (voir section DNS ci-dessous).
+- [ ] **Nom de domaine final** (voir section DNS ci-dessous) — pensez aussi à remplacer `VOTRE-DOMAINE` dans `emailjs-invitation-template.html` une fois choisi.
 
 ## Photos : méthode utilisée et pourquoi
 
