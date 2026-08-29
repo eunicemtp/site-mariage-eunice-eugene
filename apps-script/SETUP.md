@@ -85,13 +85,8 @@ Le script ne renvoie jamais la liste complète des invités au site : une recher
 En plus du template EmailJS existant (qui vous notifie, vous, à chaque RSVP), il en faut un **second**, dédié à l'envoi de l'invitation à l'invité lui-même :
 
 1. Dans votre dashboard EmailJS → **Email Templates** → *Create New Template*.
-2. Onglet **Settings** du template → champ **"To Email"** → mettez `{{to_email}}` (une variable, pas une adresse fixe cette fois — c'est ce qui permet d'envoyer à l'adresse de chaque invité).
-3. Dans le corps du template, utilisez les variables :
-   ```
-   Nom : {{nom}}
-   Événements : {{evenements}}
-   ```
-   Vous pouvez reprendre la mise en forme HTML de [emailjs-template.html](../emailjs-template.html) comme point de départ, adaptée à ce contenu.
+2. Onglet **Settings** du template → champ **"To Email"** → mettez `{{to_email}}` (une variable, pas une adresse fixe cette fois — c'est ce qui permet d'envoyer à l'adresse de chaque invité). Champ **"Subject"** → `Votre invitation — Eunice & Eugène`.
+3. Onglet **Content** → basculez en mode code/HTML → copiez-collez le contenu du `<table>...</table>` de [`emailjs-invitation-template.html`](../emailjs-invitation-template.html) (déjà prêt, aux couleurs du site, variables `{{nom}}` et `{{evenements}}` déjà en place). Pensez à remplacer `VOTRE-DOMAINE` par le vrai domaine du site une fois en ligne (lien "Confirmer ma présence").
 4. Notez le **Template ID** de ce nouveau template.
 5. Ouvrez `js/invitation.js` et remplacez le placeholder :
    ```js

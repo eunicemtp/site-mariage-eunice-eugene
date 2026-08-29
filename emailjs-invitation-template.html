@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Aperçu du template email — invitation à l'invité</title>
+</head>
+<body style="margin:0;">
+<!--
+  APERÇU LOCAL UNIQUEMENT (ce fichier n'est pas utilisé par le site).
+  Pour EmailJS : copiez uniquement le <table> ci-dessous (pas le
+  <!DOCTYPE>/<head>/<body>) dans l'onglet "Content" du template,
+  en mode édition HTML/code.
+
+  Variables utilisées : {{nom}}, {{evenements}}
+  Champ "To email" du template (onglet Settings) : {{to_email}}
+    (variable, PAS une adresse fixe — c'est ce qui permet d'envoyer
+    à l'adresse de chaque invité plutôt qu'à vous)
+  Champ "Subject" du template : Votre invitation — Eunice & Eugène
+
+  Pensez à remplacer VOTRE-DOMAINE par le vrai nom de domaine du
+  site une fois en ligne (lien "Confirmer ma présence" en bas).
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F1ECE2; padding:32px 16px; font-family:Georgia, 'Times New Roman', serif;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px; background-color:#FAF6F0; border-radius:14px; overflow:hidden; border:1px solid #E3DACB;">
+
+        <!-- En-tête -->
+        <tr>
+          <td align="center" style="background-color:#15120E; padding:40px 24px;">
+            <div style="font-family:Georgia, 'Times New Roman', serif; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:#B58A4A; margin-bottom:12px;">
+              Vous êtes invité·e
+            </div>
+            <div style="font-family:Georgia, 'Times New Roman', serif; font-size:34px; color:#ffffff;">
+              Eunice <span style="color:#B58A4A; font-style:italic;">&amp;</span> Eugène
+            </div>
+            <div style="font-family:Arial, sans-serif; font-size:13px; letter-spacing:1px; color:#E4D3B8; margin-top:10px;">
+              21 Novembre 2026 — Andenne &amp; Charleroi
+            </div>
+          </td>
+        </tr>
+
+        <!-- Corps -->
+        <tr>
+          <td style="padding:36px 28px;">
+            <div style="font-family:Georgia, 'Times New Roman', serif; font-size:20px; color:#221E19; margin-bottom:4px;">
+              Cher(e) {{nom}},
+            </div>
+            <div style="font-family:Arial, sans-serif; font-size:15px; color:#6E6858; line-height:1.7; margin-bottom:24px;">
+              Avec la bénédiction de Dieu et entourés de leurs familles, Eunice &amp; Eugène ont la joie de vous convier à célébrer leur mariage.
+            </div>
+
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F1ECE2; border-radius:8px; border:1px solid #E3DACB;">
+              <tr>
+                <td style="padding:18px 20px;">
+                  <div style="font-family:Arial, sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#8C6A35; margin-bottom:6px;">Vous êtes convié·e à</div>
+                  <div style="font-family:Arial, sans-serif; font-size:16px; color:#221E19; font-weight:bold;">{{evenements}}</div>
+                </td>
+              </tr>
+            </table>
+
+            <div style="font-family:Arial, sans-serif; font-size:13px; color:#6E6858; line-height:1.6; margin-top:20px;">
+              Adresses, horaires et informations pratiques précisés séparément. Merci de confirmer votre présence avant le <strong>1er octobre 2026</strong>.
+            </div>
+
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;">
+              <tr>
+                <td align="center">
+                  <a href="https://VOTRE-DOMAINE/#rsvp" style="display:inline-block; background-color:#15120E; color:#ffffff; font-family:Arial, sans-serif; font-size:14px; font-weight:bold; text-decoration:none; padding:14px 32px; border-radius:999px;">
+                    Confirmer ma présence
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Pied -->
+        <tr>
+          <td align="center" style="background-color:#15120E; padding:22px 24px;">
+            <div style="font-family:Georgia, 'Times New Roman', serif; font-style:italic; font-size:13px; color:#B58A4A;">
+              « Que l'homme donc ne sépare pas ce que Dieu a joint. » — Marc 10:9
+            </div>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

@@ -19,7 +19,8 @@ site-mariage-eunice-eugene/
 ├── apps-script/
 │   ├── Code.gs          → backend Google Apps Script (API du Google Sheet invités)
 │   └── SETUP.md         → guide pas-à-pas : créer le Sheet + déployer le script
-├── emailjs-template.html → template email stylé à coller dans EmailJS (voir section RSVP)
+├── emailjs-template.html → template email "notification RSVP" (vers vous) à coller dans EmailJS
+├── emailjs-invitation-template.html → template email "invitation" (vers l'invité) à coller dans EmailJS
 └── README.md
 ```
 
