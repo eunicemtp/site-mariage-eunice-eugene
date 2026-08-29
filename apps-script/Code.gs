@@ -79,7 +79,8 @@ function getSheet() {
     : SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = spreadsheet.getSheetByName(SHEET_NAME);
   if (!sheet) {
-    throw new Error('Onglet "' + SHEET_NAME + '" introuvable dans ce Google Sheet. Vérifiez le nom exact de l\'onglet et la valeur de SPREADSHEET_ID.');
+    var found = spreadsheet.getSheets().map(function (s) { return s.getName(); }).join(', ');
+    throw new Error('Onglet "' + SHEET_NAME + '" introuvable. Onglets réellement présents dans ce Sheet ("' + spreadsheet.getName() + '") : [' + found + ']');
   }
   return sheet;
 }
