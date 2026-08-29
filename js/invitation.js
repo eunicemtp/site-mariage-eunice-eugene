@@ -20,7 +20,7 @@
 //    ce groupe (vérifié aussi côté serveur).
 // ============================================================
 (function () {
-  var APPS_SCRIPT_URL = 'COLLEZ_VOTRE_URL_APPS_SCRIPT';
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJmopnUKcDS8odreb1P4uBvFlwpgVE_0i_Bn68R4KOUkg1rpSWX5BaiIAsDrm2Yhv12w/exec';
 
   var EMAILJS_PUBLIC_KEY = '5sMglvaFz6l3sHO0h';
   var EMAILJS_SERVICE_ID = 'service_04i12bd';

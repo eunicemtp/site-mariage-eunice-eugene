@@ -41,6 +41,11 @@
 
 var SHEET_NAME = 'Invités';
 
+// ID du Google Sheet (dans l'URL du Sheet, entre /d/ et /edit) —
+// utilisé plutôt que "le classeur actif" pour que ça fonctionne
+// que le script soit lié au Sheet ou créé comme projet indépendant.
+var SPREADSHEET_ID = 'COLLEZ_ID_DE_VOTRE_GOOGLE_SHEET';
+
 function doGet(e) {
   var action = e.parameter.action;
   if (action === 'search') {
@@ -69,7 +74,14 @@ function doPost(e) {
 }
 
 function getSheet() {
-  return SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  var spreadsheet = SPREADSHEET_ID.indexOf('COLLEZ_') === 0
+    ? SpreadsheetApp.getActiveSpreadsheet()
+    : SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    throw new Error('Onglet "' + SHEET_NAME + '" introuvable dans ce Google Sheet. Vérifiez le nom exact de l\'onglet et la valeur de SPREADSHEET_ID.');
+  }
+  return sheet;
 }
 
 function getAllRows() {

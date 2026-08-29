@@ -36,7 +36,13 @@ Ceci remplace la liste d'invités par un Google Sheet que vous gérez vous-même
 1. Dans ce même Google Sheet : menu **Extensions → Apps Script**.
 2. Supprimez le contenu par défaut du fichier `Code.gs` qui s'ouvre.
 3. Copiez-collez l'intégralité du contenu de [`apps-script/Code.gs`](Code.gs) (dans ce repo) à la place.
-4. Cliquez sur l'icône disquette (💾) pour enregistrer.
+4. Récupérez l'**ID de votre Google Sheet** : dans l'URL du Sheet (`https://docs.google.com/spreadsheets/d/`**`CETTE-PARTIE-ICI`**`/edit`), copiez la partie entre `/d/` et `/edit`.
+5. Dans le code collé, remplacez la ligne :
+   ```js
+   var SPREADSHEET_ID = 'COLLEZ_ID_DE_VOTRE_GOOGLE_SHEET';
+   ```
+   par l'ID copié (entre guillemets).
+6. Cliquez sur l'icône disquette (💾) pour enregistrer.
 
 ## 3. Déployer en Web App
 
@@ -56,6 +62,17 @@ Donnez-moi cette URL, je la colle dans `js/invitation.js` (constante `APPS_SCRIP
 ## Pour modifier la liste plus tard
 
 Ouvrez simplement le Google Sheet et éditez les lignes — ajout d'invité, changement d'événements invités, etc. Aucune republication du script n'est nécessaire pour ces changements (seul un changement du **code** du script demanderait un nouveau déploiement).
+
+## Si vous modifiez le code (Code.gs) après le premier déploiement
+
+Contrairement aux données du Sheet (toujours lues en direct), le **code** du script reste figé à sa version déployée. Après avoir collé une nouvelle version de `Code.gs` :
+
+1. **Déployer → Gérer les déploiements**.
+2. Cliquez sur le crayon (✏️) à côté du déploiement existant.
+3. En haut, changez **Version** sur **Nouvelle version**.
+4. **Déployer**.
+
+L'URL `/exec` reste la même — pas besoin de me la redonner, sauf si vous créez un déploiement complètement nouveau plutôt que d'éditer l'existant.
 
 ## Confidentialité
 
