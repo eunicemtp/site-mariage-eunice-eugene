@@ -25,7 +25,7 @@
   var EMAILJS_PUBLIC_KEY = '5sMglvaFz6l3sHO0h';
   var EMAILJS_SERVICE_ID = 'service_04i12bd';
   var EMAILJS_RSVP_TEMPLATE_ID = 'template_8hm8yhf'; // notifie Eunice & Eugène à chaque RSVP
-  var EMAILJS_INVITATION_TEMPLATE_ID = 'COLLEZ_VOTRE_TEMPLATE_INVITATION'; // envoie l'invitation à l'invité (To Email = {{to_email}})
+  var EMAILJS_INVITATION_TEMPLATE_ID = 'template_0wy88fr'; // envoie l'invitation à l'invité (To Email = {{to_email}})
 
   // Lien Google Maps (marche à pied) du parking gratuit vers la salle,
   // construit à partir des adresses réelles indiquées sur le carton
