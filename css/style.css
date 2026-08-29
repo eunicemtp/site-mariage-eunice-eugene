@@ -592,8 +592,43 @@ p { margin: 0 0 1em; }
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 32px;
+  margin: 16px auto 0;
 }
+
+/* Rendu hors-écran utilisé uniquement pour générer l'image/le PDF —
+   jamais visible à l'utilisateur (voir js/invitation.js). */
+.invitation-printable-offscreen {
+  position: absolute;
+  top: 0;
+  left: -9999px;
+  width: 600px;
+  padding: 24px;
+  background: var(--color-bg);
+}
+
+.rsvp-select-wrap {
+  max-width: 420px;
+  margin: 24px auto 0;
+  text-align: left;
+}
+.rsvp-select-wrap label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.rsvp-select-wrap select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border-gold);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  background: var(--color-card);
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+.rsvp-select-wrap .btn { width: 100%; border: none; }
 
 .btn-secondary {
   background: transparent;

@@ -62,7 +62,12 @@ Si vous ajoutez d'autres photos plus tard : compressez-les d'abord (max ~1500 px
 
 ## Invitations personnalisées : architecture
 
-Plutôt qu'un site public affichant les adresses/horaires à n'importe qui, chaque invité tape son prénom (ou le nom de son groupe/famille) dans la section **« Trouvez votre invitation »** et découvre uniquement les événements auxquels son groupe est convié parmi les quatre possibles (coutumier, église, soirée, commune) — comme une vraie invitation, pas une page publique. Un couple ou une famille invités ensemble partagent la même invitation, affichée sous leur nom de groupe (ex. « Couple Mande »), tout en restant trouvable par le prénom de chacun.
+Plutôt qu'un site public affichant les adresses/horaires à n'importe qui, le site propose **deux parcours séparés**, tous deux basés sur une recherche par prénom (ou nom de groupe/famille) :
+
+1. **« Recevoir mon invitation »** (section *Votre invitation*) : nom + email → l'invitation part par email, elle **ne s'affiche jamais comme texte sur le site**. Les boutons télécharger image/PDF génèrent le fichier à partir d'un rendu hors-écran, jamais montré à l'écran — aucune adresse ni horaire n'apparaît donc en clair sur la page.
+2. **« Confirmer ma présence »** (section *RSVP*) : nom seul (menu déroulant si plusieurs correspondances) → formulaire de confirmation minimal (présence, nombre de personnes, enfants, message) — sans jamais réafficher les événements ni l'email. Le nombre de personnes qui confirment est plafonné au nombre réellement invité pour ce groupe (vérifié aussi côté serveur, pas seulement dans le formulaire).
+
+Un couple ou une famille invités ensemble partagent la même invitation, retrouvable sous le nom du groupe (ex. « Couple Mande ») ou le prénom de chacun de ses membres.
 
 **Ce que ça implique techniquement :** garder une liste de ~157 groupes/305 personnes confidentielle (qui est invité à quoi) n'est pas possible avec du HTML/CSS/JS 100 % statique — un fichier JS public serait lisible par n'importe qui via le code source. Le site s'appuie donc sur un petit backend gratuit :
 
@@ -74,16 +79,15 @@ Plutôt qu'un site public affichant les adresses/horaires à n'importe qui, chaq
 
 **Configuration complète (Sheet + script + déploiement) : voir [`apps-script/SETUP.md`](apps-script/SETUP.md).** Une fois l'URL du script obtenue, collez-la dans `js/invitation.js` (`APPS_SCRIPT_URL`, en haut du fichier).
 
-### Réception de l'invitation : écran, email, image, PDF
+### Réception de l'invitation : email, image, PDF (jamais à l'écran)
 
-Une fois l'invitation débloquée (nom + email) :
-- Elle s'affiche directement à l'écran, avec uniquement les événements du groupe.
-- Une copie est envoyée par email à l'adresse fournie (second template EmailJS dédié — voir SETUP.md).
-- L'invité peut la télécharger en **image (PNG)** ou en **PDF** directement depuis la page (génération côté navigateur avec html2canvas + jsPDF, aucun envoi de données à un tiers pour ça).
+Une fois nom + email validés (première adresse = verrouillage définitif pour ce groupe) :
+- Une copie complète (avec les événements) est envoyée par email à l'adresse fournie (second template EmailJS dédié — voir SETUP.md).
+- L'invité peut aussi la télécharger en **image (PNG)** ou en **PDF** directement depuis la page. La génération se fait côté navigateur (html2canvas + jsPDF) à partir d'un élément construit hors de l'écran visible, jamais rendu à l'écran — donc jamais lisible en clair sur le site, même par la personne qui vient de faire la demande.
 
-### RSVP intégré + notification email (EmailJS)
+### RSVP séparé, plafonné au nombre de places invitées
 
-Le RSVP n'est plus un formulaire public séparé : il apparaît directement dans l'invitation personnalisée, une fois l'invité identifié (l'email n'est pas redemandé, il a déjà été fourni pour débloquer l'invitation). À la soumission, deux choses se passent en parallèle (indépendantes — si l'une échoue, l'autre peut quand même réussir) :
+La confirmation de présence est un parcours à part (section *RSVP*, nom seul) qui ne redemande pas l'email et ne réaffiche jamais les événements — seulement : présence, nombre de personnes (avec un maximum = nombre de personnes invitées pour ce groupe, appliqué à la fois dans le formulaire et vérifié côté serveur au moment de l'enregistrement), enfants, message. À la soumission, deux choses se passent en parallèle (indépendantes — si l'une échoue, l'autre peut quand même réussir) :
 
 1. La réponse est enregistrée dans le Google Sheet (colonnes Statut RSVP / Nombre de personnes / Nombre d'enfants / Message de la ligne correspondante).
 2. Une notification est envoyée par email via [EmailJS](https://www.emailjs.com) (déjà configuré dans `js/invitation.js` avec vos identifiants existants) pour être prévenu instantanément.

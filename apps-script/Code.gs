@@ -30,6 +30,13 @@
  *   I: Email (verrouillage) J: Statut RSVP
  *   K: Nombre de personnes confirmées
  *   L: Nombre d'enfants     M: Message
+ *
+ * Deux parcours séparés, volontairement découplés :
+ *   1. "Recevoir mon invitation" (nom + email) → unlockGuest() envoie
+ *      l'invitation complète par email. Rien n'est affiché à l'écran.
+ *   2. "Confirmer ma présence" (nom seul) → rsvpInfo() ne renvoie que
+ *      le nom du groupe et le nombre de personnes invitées (pour
+ *      plafonner le champ RSVP), jamais les événements ni l'email.
  */
 
 var SHEET_NAME = 'Invités';
@@ -41,6 +48,9 @@ function doGet(e) {
   }
   if (action === 'unlock') {
     return respond(unlockGuest(Number(e.parameter.id), e.parameter.email || ''));
+  }
+  if (action === 'rsvpInfo') {
+    return respond(getRsvpInfo(Number(e.parameter.id)));
   }
   return respond({ error: 'Action inconnue.' });
 }
@@ -137,10 +147,34 @@ function unlockGuest(id, email) {
   return { guest: guest };
 }
 
+// Renvoie UNIQUEMENT le nom du groupe et le nombre de personnes
+// invitées — pour afficher/plafonner le formulaire RSVP sans jamais
+// exposer les événements, l'email ou le statut d'un groupe.
+function getRsvpInfo(id) {
+  var guest = getAllRows().filter(function (r) { return r.id === id; })[0];
+  if (!guest) return { error: 'Invitation introuvable.' };
+  return {
+    guest: {
+      id: guest.id,
+      nomGroupe: guest.nomGroupe,
+      nombrePersonnesInvitees: guest.nombrePersonnesInvitees
+    }
+  };
+}
+
 function saveRsvp(body) {
   var sheet = getSheet();
   var row = Number(body.id);
   if (!row || row < 2) return { error: 'ID invalide.' };
+
+  var guest = getAllRows().filter(function (r) { return r.id === row; })[0];
+  if (!guest) return { error: 'Invitation introuvable.' };
+
+  var invited = Number(guest.nombrePersonnesInvitees) || 0;
+  var confirmed = Number(body.nombrePersonnes) || 0;
+  if (invited > 0 && confirmed > invited) {
+    return { error: 'Le nombre de personnes dépasse le nombre de places invitées pour ce groupe (' + invited + ').' };
+  }
 
   sheet.getRange(row, 10).setValue(body.presence || '');
   sheet.getRange(row, 11).setValue(body.nombrePersonnes || '');

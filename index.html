@@ -22,6 +22,7 @@
     <nav class="nav-links" id="navLinks">
       <a href="#histoire">Notre histoire</a>
       <a href="#invitation">Mon invitation</a>
+      <a href="#rsvp">RSVP</a>
       <a href="#galerie">Galerie</a>
       <a href="#cadeaux">Cadeaux</a>
       <a href="#contact">Contact</a>
@@ -88,9 +89,9 @@
 <section class="section section-alt" id="invitation">
   <div class="container narrow center">
     <p class="eyebrow">Votre invitation</p>
-    <h2 class="section-title">Trouvez votre invitation</h2>
+    <h2 class="section-title">Recevoir mon invitation</h2>
     <div class="divider"><span class="divider-mark">✦</span></div>
-    <p class="invitation-intro">Entrez votre prénom (ou le nom de votre famille/couple) et votre email pour recevoir votre invitation personnalisée.</p>
+    <p class="invitation-intro">Entrez votre prénom (ou le nom de votre famille/couple) et votre email : votre invitation personnalisée vous sera envoyée par email — elle ne s'affiche pas sur cette page.</p>
 
     <form id="guestSearchForm" class="guest-search-form">
       <input type="text" id="guestSearchInput" placeholder="Votre prénom ou nom" autocomplete="name" required>
@@ -98,11 +99,36 @@
       <button type="submit" class="btn btn-primary">Recevoir mon invitation</button>
     </form>
 
-    <p class="invitation-lock-note">⚠️ La première adresse email utilisée pour une invitation est définitive : une fois envoyée, cette invitation ne pourra plus être envoyée à une autre adresse. Merci de ne pas consulter ou télécharger l'invitation d'un autre invité.</p>
+    <p class="invitation-lock-note">⚠️ La première adresse email utilisée pour une invitation est définitive : une fois envoyée, cette invitation ne pourra plus être envoyée à une autre adresse. Merci de ne pas demander l'invitation d'un autre invité.</p>
 
     <p class="guest-search-feedback" id="guestSearchFeedback" role="status"></p>
 
     <ul class="guest-results-list" id="guestResultsList" hidden></ul>
+  </div>
+</section>
+
+<!-- ===== CONFIRMER MA PRÉSENCE ===== -->
+<section class="section" id="rsvp">
+  <div class="container narrow center">
+    <p class="eyebrow">RSVP</p>
+    <h2 class="section-title">Confirmer ma présence</h2>
+    <div class="divider"><span class="divider-mark">✦</span></div>
+    <p class="invitation-intro">Vous avez déjà reçu votre invitation par email ? Entrez votre prénom ou nom pour confirmer votre présence.</p>
+
+    <form id="rsvpSearchForm" class="guest-search-form">
+      <input type="text" id="rsvpSearchInput" placeholder="Votre prénom ou nom" autocomplete="name" required>
+      <button type="submit" class="btn btn-primary">Continuer</button>
+    </form>
+
+    <p class="guest-search-feedback" id="rsvpSearchFeedback" role="status"></p>
+
+    <div class="rsvp-select-wrap" id="rsvpSelectWrap" hidden>
+      <label for="rsvpResultsSelect">Sélectionnez votre invitation</label>
+      <select id="rsvpResultsSelect">
+        <option value="">— Choisir —</option>
+      </select>
+      <button type="button" class="btn btn-primary" id="rsvpSelectConfirm">Continuer</button>
+    </div>
 
     <div class="invitation-card" id="invitationCard" hidden></div>
   </div>
