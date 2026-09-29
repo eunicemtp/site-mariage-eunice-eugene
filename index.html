@@ -5,6 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Eunice &amp; Eugène — 21 Novembre 2026</title>
 <meta name="description" content="Le mariage d'Eunice et Eugène, le 21 novembre 2026 à Andenne et Charleroi. Rejoignez-nous pour célébrer notre union.">
+<link rel="canonical" href="https://www.maison-ee.be/">
+
+<!-- Favicon (monogramme E&E) -->
+<link rel="icon" type="image/svg+xml" href="images/logo.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+<meta name="theme-color" content="#15120E">
+
+<!-- Partage social (Facebook, WhatsApp, iMessage…) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Eunice &amp; Eugène">
+<meta property="og:title" content="Eunice &amp; Eugène — 21 Novembre 2026">
+<meta property="og:description" content="Le mariage d'Eunice et Eugène, le 21 novembre 2026 à Andenne et Charleroi. Rejoignez-nous pour célébrer notre union.">
+<meta property="og:url" content="https://www.maison-ee.be/">
+<meta property="og:image" content="https://www.maison-ee.be/images/hero.jpg">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Eunice &amp; Eugène — 21 Novembre 2026">
+<meta name="twitter:description" content="Le mariage d'Eunice et Eugène, le 21 novembre 2026 à Andenne et Charleroi.">
+<meta name="twitter:image" content="https://www.maison-ee.be/images/hero.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
@@ -23,7 +45,6 @@
       <a href="#histoire">Notre histoire</a>
       <a href="#invitation">Mon invitation</a>
       <a href="#rsvp">RSVP</a>
-      <a href="#galerie">Galerie</a>
       <a href="#cadeaux">Cadeaux</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -80,7 +101,7 @@
     </div>
     <blockquote class="verse">
       <p>« Ainsi ils ne sont plus deux, mais ils sont une seule chair. Que l'homme donc ne sépare pas ce que Dieu a joint. »</p>
-      <cite>Marc 10:9</cite>
+      <cite>Matthieu 19:6</cite>
     </blockquote>
   </div>
 </section>
@@ -91,13 +112,15 @@
     <p class="eyebrow">Votre invitation</p>
     <h2 class="section-title">Recevoir mon invitation</h2>
     <div class="divider"><span class="divider-mark">✦</span></div>
-    <p class="invitation-intro">Entrez votre prénom (ou le nom de votre famille/couple) et votre email : votre invitation personnalisée vous sera envoyée par email — elle ne s'affiche pas sur cette page.</p>
+    <p class="invitation-intro">Entrez votre prénom (ou le nom de votre famille/couple) et votre email : votre invitation personnalisée vous sera envoyée par email — elle ne s'affiche pas sur cette page. Si un homonyme partage votre prénom, précisez aussi votre nom de famille pour éviter toute confusion.</p>
 
     <form id="guestSearchForm" class="guest-search-form">
-      <input type="text" id="guestSearchInput" placeholder="Votre prénom ou nom" autocomplete="name" required>
+      <input type="text" id="guestSearchInput" placeholder="Votre prénom (+ nom si homonyme)" autocomplete="name" required>
       <input type="email" id="guestEmailInput" placeholder="Votre email" autocomplete="email" required>
       <button type="submit" class="btn btn-primary">Recevoir mon invitation</button>
     </form>
+
+    <p class="guest-no-email-link"><button type="button" class="link-btn" id="noEmailBtn">Je n'ai pas d'adresse email</button></p>
 
     <p class="invitation-lock-note">⚠️ La première adresse email utilisée pour une invitation est définitive : une fois envoyée, cette invitation ne pourra plus être envoyée à une autre adresse. Merci de ne pas demander l'invitation d'un autre invité.</p>
 
@@ -113,10 +136,10 @@
     <p class="eyebrow">RSVP</p>
     <h2 class="section-title">Confirmer ma présence</h2>
     <div class="divider"><span class="divider-mark">✦</span></div>
-    <p class="invitation-intro">Vous avez déjà reçu votre invitation par email ? Entrez votre prénom ou nom pour confirmer votre présence.</p>
+    <p class="invitation-intro">Vous avez déjà reçu votre invitation par email ? Entrez votre prénom pour confirmer votre présence. Si un homonyme partage votre prénom, précisez aussi votre nom de famille.</p>
 
     <form id="rsvpSearchForm" class="guest-search-form">
-      <input type="text" id="rsvpSearchInput" placeholder="Votre prénom ou nom" autocomplete="name" required>
+      <input type="text" id="rsvpSearchInput" placeholder="Votre prénom (+ nom si homonyme)" autocomplete="name" required>
       <button type="submit" class="btn btn-primary">Continuer</button>
     </form>
 
@@ -133,49 +156,6 @@
     <div class="invitation-card" id="invitationCard" hidden></div>
   </div>
 </section>
-
-<!-- ===== GALERIE ===== -->
-<section class="section" id="galerie">
-  <div class="container">
-    <p class="eyebrow">Souvenirs</p>
-    <h2 class="section-title center">Notre galerie</h2>
-    <div class="divider"><span class="divider-mark">✦</span></div>
-    <div class="gallery-grid" id="galleryGrid">
-      <button class="gallery-item" data-full="images/gallery-1.jpg">
-        <img src="images/gallery-1.jpg" alt="Eunice et Eugène, moment complice en extérieur" loading="lazy">
-      </button>
-      <button class="gallery-item" data-full="images/gallery-2.jpg">
-        <img src="images/gallery-2.jpg" alt="Eunice et Eugène, tenue élégante" loading="lazy">
-      </button>
-      <button class="gallery-item" data-full="images/gallery-3.jpg">
-        <img src="images/gallery-3.jpg" alt="Eunice et Eugène en extérieur" loading="lazy">
-      </button>
-      <button class="gallery-item" data-full="images/gallery-4.jpg">
-        <img src="images/gallery-4.jpg" alt="Eunice et Eugène, moment complice en voiture" loading="lazy">
-      </button>
-      <button class="gallery-item" data-full="images/gallery-5.jpg">
-        <img src="images/gallery-5.jpg" alt="Eunice et Eugène en balade" loading="lazy">
-      </button>
-      <button class="gallery-item" data-full="images/gallery-6.jpg">
-        <img src="images/gallery-6.jpg" alt="Portrait d'Eunice" loading="lazy">
-      </button>
-      <button class="gallery-item" data-full="images/gallery-7.jpg">
-        <img src="images/gallery-7.jpg" alt="Portrait d'Eugène en tenue traditionnelle" loading="lazy">
-      </button>
-      <button class="gallery-item" data-full="images/gallery-8.jpg">
-        <img src="images/gallery-8.jpg" alt="Portrait d'Eugène" loading="lazy">
-      </button>
-    </div>
-  </div>
-</section>
-
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo agrandie">
-  <button class="lightbox-close" id="lightboxClose" aria-label="Fermer">&times;</button>
-  <button class="lightbox-prev" id="lightboxPrev" aria-label="Photo précédente">&#8249;</button>
-  <img class="lightbox-img" id="lightboxImg" src="" alt="">
-  <button class="lightbox-next" id="lightboxNext" aria-label="Photo suivante">&#8250;</button>
-</div>
 
 <!-- ===== CADEAUX ===== -->
 <section class="section" id="cadeaux">
@@ -197,7 +177,12 @@
       <p class="cadeaux-qr-caption">Scannez avec votre application bancaire pour un virement pré-rempli</p>
     </div>
 
-    <p class="cadeaux-text"><em>(Liste de mariage à venir — nous vous tiendrons informés.)</em></p>
+    <p class="cadeaux-or">— ou —</p>
+
+    <a href="https://revolut.me/eunice4erd/pocket/cvrXLl4OZa" target="_blank" rel="noopener" class="cadeaux-iban cadeaux-revolut">
+      💳 Payer par carte / Apple Pay
+    </a>
+    <p class="cadeaux-qr-caption">Pratique depuis l'étranger — via Revolut, sans besoin d'y avoir de compte.</p>
   </div>
 </section>
 
@@ -210,7 +195,8 @@
     <p class="contact-text">N'hésitez pas à nous contacter pour toute question concernant le mariage.</p>
     <div class="contact-links">
       <a href="tel:+32488682325" class="contact-link">📞 04 88 68 23 25</a>
-      <a href="mailto:VOTRE-EMAIL@a-remplacer.be" class="contact-link">✉️ VOTRE-EMAIL@a-remplacer.be</a>
+      <a href="tel:+32465684774" class="contact-link">📞 04 65 68 47 74</a>
+      <a href="mailto:mtpeunice@gmail.com" class="contact-link">✉️ mtpeunice@gmail.com</a>
     </div>
   </div>
 </section>
@@ -241,7 +227,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="js/countdown.js"></script>
-<script src="js/gallery.js"></script>
 <script src="js/invitation.js"></script>
 <script src="js/gifts.js"></script>
 <script src="js/nav.js"></script>

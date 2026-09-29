@@ -11,7 +11,6 @@ site-mariage-eunice-eugene/
 │   └── style.css
 ├── js/
 │   ├── countdown.js    → compte à rebours
-│   ├── gallery.js      → galerie + lightbox
 │   ├── invitation.js   → recherche d'invité + invitation personnalisée + RSVP
 │   ├── music.js        → musique de fond (YouTube caché) + bouton flottant
 │   └── nav.js          → menu mobile
@@ -40,10 +39,9 @@ Le site contient volontairement des placeholders explicites à remplacer :
 - [x] **Google Sheet + Apps Script** : backend déployé et connecté (`APPS_SCRIPT_URL` dans `js/invitation.js`), testé de bout en bout.
 - [x] **EmailJS (notification RSVP)** : configuré.
 - [x] **Adresses, horaires, parking** des 3 cérémonies (civile, religieuse, réception) : renseignés dans `js/invitation.js` (objet `EVENTS`), repris du carton d'invitation officiel — y compris l'itinéraire à pied depuis le Parking Charleroi Expo pour la réception.
-- [ ] **Cérémonie coutumière** : toujours « à confirmer » (objet `EVENTS`, clé `coutumier`) — aucune adresse/horaire ne figurait sur le carton d'invitation fourni. Si elle a lieu séparément, dites-moi les détails ou laissez `Oui`/`Non` à jour dans le Google Sheet selon les groupes concernés.
 - [ ] **EmailJS (envoi de l'invitation à l'invité)** : créer un second template (voir `apps-script/SETUP.md`) et coller son ID dans `EMAILJS_INVITATION_TEMPLATE_ID` (`js/invitation.js`). Sans ça, le téléchargement image/PDF fonctionne quand même, mais l'email n'est pas envoyé.
-- [ ] **Email de contact** : remplacer `VOTRE-EMAIL@a-remplacer.be` dans `index.html` (section `#contact`) par votre adresse définitive, une fois créée avec le domaine.
-- [ ] **Section cadeaux** : à personnaliser ou remplacer par un lien de liste de mariage si vous en créez une.
+- [x] **Email de contact** : `mtpeunice@gmail.com` (section `#contact`).
+- [x] **Section cadeaux** : IBAN + QR code uniquement, pas de liste de mariage prévue.
 - [ ] **Nom de domaine final** (voir section DNS ci-dessous) — pensez aussi à remplacer `VOTRE-DOMAINE` dans `emailjs-invitation-template.html` une fois choisi.
 
 ## Photos : méthode utilisée et pourquoi

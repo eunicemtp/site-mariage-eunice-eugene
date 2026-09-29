@@ -10,24 +10,26 @@ Ceci remplace la liste d'invités par un Google Sheet que vous gérez vous-même
 2. Renommez l'onglet du bas en **`Invités`** (exactement ce nom, avec l'accent).
 3. Sur la ligne 1, entrez ces en-têtes de colonnes, dans cet ordre exact :
 
-   | A | B | C | D | E | F | G | H | I | J | K | L | M |
-   |---|---|---|---|---|---|---|---|---|---|---|---|---|
-   | Nom du groupe | Noms (recherche) | Catégorie | Coutumier | Église | Soirée | Commune | Nombre de personnes invitées | Email | Statut RSVP | Nombre de personnes confirmées | Nombre d'enfants | Message |
+   | A | B | C | D | E | F | G | H | I | J | K | L | M | N |
+   |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+   | Nom du groupe | Noms (recherche) | Catégorie | Coutumier | Église | Soirée | Commune | Fête uniquement | Nombre de personnes invitées | Email | Statut RSVP | Nombre de personnes confirmées | Nombre d'enfants | Message |
 
 4. À partir de la ligne 2, une ligne par groupe :
    - **Nom du groupe** : ce qui s'affiche sur l'invitation (ex. `Couple Mande`, `Anderson & Mado`, ou juste `Bayo` pour une personne seule).
    - **Noms (recherche)** : les prénoms individuels séparés par des virgules (ex. `Marie Claire, Patrick`), pour que chacun retrouve l'invitation en tapant son propre prénom. Laissez vide si le nom du groupe suffit.
    - **Catégorie** : informatif (Famille, Amis…), non affiché sur le site.
    - **Coutumier / Église / Soirée / Commune** : écrivez exactement `Oui` ou `Non`.
+   - **Fête uniquement** : `Oui` ou `Non` — uniquement pertinent si **Soirée** = `Oui`. Si `Oui`, le groupe reçoit un carton dédié "soirée dansante" (00h00, sans le repas) au lieu du carton complet ; sinon `Non` ou vide = réception complète (18h30) comme d'habitude.
    - **Nombre de personnes invitées** : le nombre de places prévues pour ce groupe (pré-remplit le formulaire RSVP, modifiable par l'invité).
    - Les colonnes Email / Statut RSVP / Nombre de personnes confirmées / Nombre d'enfants / Message restent **vides** — elles se remplissent automatiquement à la confirmation.
 
    Exemple :
 
-   | Nom du groupe | Noms (recherche) | Catégorie | Coutumier | Église | Soirée | Commune | Nombre de personnes invitées |
-   |---|---|---|---|---|---|---|---|
-   | Couple Mande | Marie Claire, Patrick | Famille | Oui | Oui | Oui | Oui | 2 |
-   | Bayo | | Famille (Fiancé) | Oui | Oui | Oui | Oui | 1 |
+   | Nom du groupe | Noms (recherche) | Catégorie | Coutumier | Église | Soirée | Commune | Fête uniquement | Nombre de personnes invitées | ... |
+   |---|---|---|---|---|---|---|---|---|---|
+   | Couple Mande | Marie Claire, Patrick | Famille | Oui | Oui | Oui | Oui | Non | 2 | ... |
+   | Bayo | | Famille (Fiancé) | Oui | Oui | Oui | Oui | Non | 1 | ... |
+   | Junior | | Amis | Non | Non | Oui | Non | Oui | 1 | ... |
 
 **Import rapide depuis votre liste existante :** si vous avez déjà un fichier "Répartition invités/événements" (comme celui de test que vous m'avez donné), je peux vous générer un CSV prêt à coller dans ce Sheet, dans ce format exact, à partir de vos données réelles — dites-le-moi.
 
@@ -95,3 +97,14 @@ En plus du template EmailJS existant (qui vous notifie, vous, à chaque RSVP), i
    par l'ID obtenu.
 
 Tant que ce champ reste un placeholder, l'invitation s'affiche normalement à l'écran mais aucun email n'est envoyé (pas d'erreur visible pour l'invité).
+
+## Repérer les prénoms en double (homonymes)
+
+Le site accepte volontairement une recherche par simple prénom (certains invités n'ont pas de nom de famille connu). Si deux invités différents partagent exactement le même prénom, ils pourraient être confondus à la recherche. Pour vérifier :
+
+1. Ouvrez le projet dans l'éditeur Apps Script.
+2. En haut, dans le menu déroulant des fonctions, sélectionnez **`auditDoublonsPrenoms`**.
+3. Cliquez sur ▶ **Exécuter**.
+4. Retournez dans votre Google Sheet : un nouvel onglet **"Doublons"** apparaît (en bas, à côté de l'onglet "Invités") avec le résultat — la liste des prénoms qui apparaissent dans plusieurs groupes, avec le nom de groupe et le numéro de ligne de chacun.
+
+Cette fonction ne modifie jamais la liste d'invités et n'est jamais appelée par le site — c'est un outil de diagnostic ponctuel, à relancer (même bouton ▶ Exécuter) chaque fois que la liste change ; l'onglet "Doublons" est réécrit à chaque exécution. Pour les prénoms signalés en double, ajoutez le nom de famille dans la colonne "Noms (recherche)" **uniquement pour ces cas-là** (ex. `Marie Kabongo` au lieu de `Marie`) — pas besoin d'y toucher pour tout le monde.

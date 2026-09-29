@@ -18,13 +18,18 @@
     {{{evenements_detail}}} → bloc HTML détaillé (adresse, horaire,
                               parking) — TRIPLE accolades obligatoires
                               (sinon EmailJS échappe le HTML en texte brut)
+    {{{rsvp_block}}}        → bloc HTML dynamique : soit "merci de
+                              confirmer" + bouton, soit un message
+                              "présence déjà confirmée" si l'invité a
+                              déjà répondu au RSVP — TRIPLE accolades
+                              obligatoires (calculé côté site, dans
+                              js/invitation.js → sendInvitationEmail)
   Champ "To email" du template (onglet Settings) : {{to_email}}
     (variable, PAS une adresse fixe — c'est ce qui permet d'envoyer
     à l'adresse de chaque invité plutôt qu'à vous)
   Champ "Subject" du template : Votre invitation — Eunice & Eugène
 
-  Pensez à remplacer VOTRE-DOMAINE par le vrai nom de domaine du
-  site une fois en ligne (lien "Confirmer ma présence" en bas).
+  Domaine du site : www.maison-ee.be (lien "Confirmer ma présence" en bas).
 -->
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F1ECE2; padding:32px 16px; font-family:Georgia, 'Times New Roman', serif;">
   <tr>
@@ -60,19 +65,7 @@
               {{{evenements_detail}}}
             </div>
 
-            <div style="font-family:Arial, sans-serif; font-size:13px; color:#6E6858; line-height:1.6; margin-top:20px;">
-              Merci de confirmer votre présence avant le <strong>1er octobre 2026</strong>.
-            </div>
-
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;">
-              <tr>
-                <td align="center">
-                  <a href="https://VOTRE-DOMAINE/#rsvp" style="display:inline-block; background-color:#15120E; color:#ffffff; font-family:Arial, sans-serif; font-size:14px; font-weight:bold; text-decoration:none; padding:14px 32px; border-radius:999px;">
-                    Confirmer ma présence
-                  </a>
-                </td>
-              </tr>
-            </table>
+            {{{rsvp_block}}}
           </td>
         </tr>
 
