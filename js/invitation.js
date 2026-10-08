@@ -159,14 +159,17 @@
 
       setFeedback('Recherche…');
 
-      apiGet({ action: 'search', q: query })
+      // Un seul aller-retour réseau (recherche + réclamation combinées
+      // côté serveur) plutôt que deux séquentiels — Apps Script étant
+      // lent, ça réduit sensiblement le temps d'attente pour le cas
+      // courant (nom non ambigu).
+      apiGet({ action: 'claimInvitation', q: query, email: email })
         .then(function (data) {
           if (data.error) { setFeedback(data.error, true); return; }
+          if (data.guest) { showSuccess(data.guest, email); return; }
           var results = data.results || [];
           if (results.length === 0) {
             showNotFound(query, email);
-          } else if (results.length === 1) {
-            unlock(results[0].id, email);
           } else {
             setFeedback('Plusieurs invitations correspondent — sélectionnez la vôtre :');
             renderResults(results, email);
@@ -384,7 +387,7 @@
       // confirmation au lieu de redemander de confirmer.
       var rsvpBlockHtml = guest.statut
         ? '<div style="font-family:Arial,sans-serif;font-size:14px;color:#3C6E47;background-color:#EAF3EC;border:1px solid #CFE3D4;border-radius:8px;padding:14px 18px;margin-top:20px;text-align:center;">✅ Votre présence a bien été confirmée. Merci !</div>'
-        : '<div style="font-family:Arial,sans-serif;font-size:13px;color:#6E6858;line-height:1.6;margin-top:20px;">Merci de confirmer votre présence avant le <strong>1er octobre 2026</strong>.</div>' +
+        : '<div style="font-family:Arial,sans-serif;font-size:13px;color:#6E6858;line-height:1.6;margin-top:20px;">Merci de confirmer votre présence avant le <strong>15 octobre 2026</strong>.</div>' +
           '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;"><tr><td align="center">' +
             '<a href="https://www.maison-ee.be/#rsvp" style="display:inline-block;background-color:#15120E;color:#ffffff;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;text-decoration:none;padding:14px 32px;border-radius:999px;">Confirmer ma présence</a>' +
           '</td></tr></table>';
@@ -436,7 +439,7 @@
           '<div class="pcard-leaf">❧ &nbsp;&nbsp; ✦ &nbsp;&nbsp; ❧</div>' +
           '<div class="pcard-verse">« Ainsi ils ne sont plus deux, mais ils sont une seule chair.<br>Que l\'homme donc ne sépare pas ce que Dieu a joint. »</div>' +
           '<div class="pcard-marc">Matthieu 19:6</div>' +
-          '<div class="pcard-rsvp">Merci de confirmer votre présence<br><span>avant le 1er octobre 2026</span></div>' +
+          '<div class="pcard-rsvp">Merci de confirmer votre présence<br><span>avant le 15 octobre 2026</span></div>' +
           '<div class="pcard-restricted">✦ Afin de préserver l\'intimité de cette célébration, cette invitation est exclusivement réservée aux personnes conviées.</div>' +
         '</div>';
 
@@ -593,15 +596,16 @@
 
       setFeedback('Recherche…');
 
-      apiGet({ action: 'search', q: query })
+      // Un seul aller-retour réseau (recherche + lecture RSVP combinées
+      // côté serveur) plutôt que deux séquentiels — réduit sensiblement
+      // le temps d'attente pour le cas courant (nom non ambigu).
+      apiGet({ action: 'rsvpLookup', q: query })
         .then(function (data) {
           if (data.error) { setFeedback(data.error, true); return; }
+          if (data.guest) { setFeedback(''); renderRsvpForm(data.guest); return; }
           var results = data.results || [];
           if (results.length === 0) {
             setFeedback("Nous n'avons pas trouvé votre nom. Vérifiez l'orthographe, ou contactez-nous directement — coordonnées en bas de page.", true);
-          } else if (results.length === 1) {
-            setFeedback('');
-            loadRsvpInfo(results[0].id);
           } else {
             setFeedback('Plusieurs invitations correspondent — sélectionnez la vôtre :');
             select.innerHTML = '<option value="">— Choisir —</option>' + results.map(function (r) {

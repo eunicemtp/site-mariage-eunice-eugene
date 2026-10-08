@@ -71,11 +71,17 @@ function doGet(e) {
   if (action === 'unlock') {
     return respond(unlockGuest(Number(e.parameter.id), e.parameter.email || ''));
   }
+  if (action === 'claimInvitation') {
+    return respond(claimInvitation(e.parameter.q || '', e.parameter.email || ''));
+  }
   if (action === 'noEmail') {
     return respond(claimWithoutEmail(Number(e.parameter.id)));
   }
   if (action === 'rsvpInfo') {
     return respond(getRsvpInfo(Number(e.parameter.id)));
+  }
+  if (action === 'rsvpLookup') {
+    return respond(rsvpLookup(e.parameter.q || ''));
   }
   if (action === 'churchInvitation') {
     return respond(createChurchInvitation(e.parameter.nom || '', e.parameter.email || ''));
@@ -141,23 +147,50 @@ function normalizeBool(v) {
 }
 
 // Recherche large : nom du groupe OU un des prénoms individuels.
-// Ne renvoie QUE le strict nécessaire à la désambiguïsation —
-// jamais l'email, le statut RSVP ou les événements.
-function searchGuests(query) {
+// Utilisée par searchGuests() et par les actions combinées ci-dessous
+// (claimInvitation / rsvpLookup) qui évitent un aller-retour réseau
+// séparé quand le nom n'est pas ambigu — Apps Script étant lent
+// (souvent 1 à 3s par appel), ça réduit de moitié le temps d'attente
+// perçu dans le cas le plus courant (un seul résultat).
+function findGuestsByQuery(query) {
   query = String(query).trim().toLowerCase();
-  if (!query) return { results: [] };
+  if (!query) return [];
+  return getAllRows().filter(function (r) {
+    if (r.nomGroupe.toLowerCase().indexOf(query) !== -1) return true;
+    var noms = r.noms.split(',').map(function (n) { return n.trim().toLowerCase(); });
+    return noms.some(function (n) { return n && n.indexOf(query) !== -1; });
+  });
+}
 
-  var results = getAllRows()
-    .filter(function (r) {
-      if (r.nomGroupe.toLowerCase().indexOf(query) !== -1) return true;
-      var noms = r.noms.split(',').map(function (n) { return n.trim().toLowerCase(); });
-      return noms.some(function (n) { return n && n.indexOf(query) !== -1; });
-    })
-    .map(function (r) {
-      return { id: r.id, nom: r.nomGroupe };
-    });
-
+// Ne renvoie QUE le strict nécessaire à la désambiguïsation — jamais
+// l'email, le statut RSVP ou les événements.
+function searchGuests(query) {
+  var results = findGuestsByQuery(query).map(function (r) {
+    return { id: r.id, nom: r.nomGroupe };
+  });
   return { results: results };
+}
+
+// Combine recherche + réclamation (unlockGuest) en un seul aller-retour
+// quand le nom n'est pas ambigu — utilisé par "Recevoir mon invitation".
+// Renvoie soit { results: [...] } (aucun ou plusieurs résultats, comme
+// searchGuests), soit directement { guest / error } comme unlockGuest.
+function claimInvitation(query, email) {
+  var matches = findGuestsByQuery(query);
+  if (matches.length !== 1) {
+    return { results: matches.map(function (r) { return { id: r.id, nom: r.nomGroupe }; }) };
+  }
+  return unlockGuest(matches[0].id, email);
+}
+
+// Combine recherche + lecture RSVP (getRsvpInfo) en un seul aller-retour
+// quand le nom n'est pas ambigu — utilisé par "Confirmer ma présence".
+function rsvpLookup(query) {
+  var matches = findGuestsByQuery(query);
+  if (matches.length !== 1) {
+    return { results: matches.map(function (r) { return { id: r.id, nom: r.nomGroupe }; }) };
+  }
+  return getRsvpInfo(matches[0].id);
 }
 
 // Verrouille (ou vérifie) l'email pour UN SEUL groupe, puis renvoie
