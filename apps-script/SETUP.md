@@ -19,7 +19,7 @@ Ceci remplace la liste d'invités par un Google Sheet que vous gérez vous-même
    - **Noms (recherche)** : les prénoms individuels séparés par des virgules (ex. `Marie Claire, Patrick`), pour que chacun retrouve l'invitation en tapant son propre prénom. Laissez vide si le nom du groupe suffit.
    - **Catégorie** : informatif (Famille, Amis…), non affiché sur le site.
    - **Coutumier / Église / Soirée / Commune** : écrivez exactement `Oui` ou `Non`.
-   - **Fête uniquement** : `Oui` ou `Non` — uniquement pertinent si **Soirée** = `Oui`. Si `Oui`, le groupe reçoit un carton dédié "soirée dansante" (00h00, sans le repas) au lieu du carton complet ; sinon `Non` ou vide = réception complète (18h30) comme d'habitude.
+   - **Fête uniquement** : `Oui` ou `Non` — uniquement pertinent si **Soirée** = `Oui`. Si `Oui`, le groupe reçoit un carton dédié "soirée dansante" (23h00, sans le repas) au lieu du carton complet ; sinon `Non` ou vide = réception complète (18h30) comme d'habitude.
    - **Nombre de personnes invitées** : le nombre de places prévues pour ce groupe (pré-remplit le formulaire RSVP, modifiable par l'invité).
    - Les colonnes Email / Statut RSVP / Nombre de personnes confirmées / Nombre d'enfants / Message restent **vides** — elles se remplissent automatiquement à la confirmation.
 

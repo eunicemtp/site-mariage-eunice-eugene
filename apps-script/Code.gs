@@ -27,7 +27,7 @@
  *   D: Coutumier (Oui/Non)  E: Église (Oui/Non)
  *   F: Soirée (Oui/Non)     G: Commune (Oui/Non)
  *   H: Fête uniquement (Oui/Non) — pour un groupe déjà "Soirée: Oui",
- *      précise s'il est convié seulement à la soirée dansante (00h00,
+ *      précise s'il est convié seulement à la soirée dansante (23h00,
  *      pas le repas) plutôt qu'à la réception complète (18h30). Sans
  *      effet si "Soirée" est "Non".
  *   I: Nombre de personnes invitées

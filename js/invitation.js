@@ -72,7 +72,7 @@
       title: 'La soirée dansante',
       place: 'Prestige Event Center',
       address: 'Boulevard Paul Janson 5<br>6000 Charleroi',
-      time: 'Horaire : 00h00',
+      time: 'Horaire : 23h00',
       note: 'Parking gratuit au Parking Charleroi Expo (Bd Solvay, 6000 Charleroi), à environ 300 m (4-5 min à pied) de la salle — suivez le Boulevard Paul Janson jusqu\'au n°5. <a href="' + PARKING_MAPS_URL + '" target="_blank" rel="noopener">Itinéraire à pied (Google Maps)</a>'
     }
   };
@@ -464,7 +464,7 @@
           '<div class="pcard-solo">' +
             '<div class="pcard-solo-eyebrow">Rejoignez-nous pour</div>' +
             '<div class="pcard-solo-title">La soirée dansante</div>' +
-            '<div class="pcard-solo-time">00h00</div>' +
+            '<div class="pcard-solo-time">23h00</div>' +
             '<div class="pcard-place">Prestige Event Center</div>' +
             '<div class="pcard-addr">Boulevard Paul Janson 5 · 6000 Charleroi</div>' +
             '<div class="pcard-parking">Parking Charleroi Expo gratuit à ± 300 m · Bd Solvay</div>' +
