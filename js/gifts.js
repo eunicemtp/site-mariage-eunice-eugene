@@ -13,7 +13,7 @@
 // ============================================================
 (function () {
   var IBAN = 'BE87650979988094'; // sans espaces, obligatoire pour le QR
-  var BENEFICIARY = 'Eunice & Eugene';
+  var BENEFICIARY = 'Eunice Mutope';
   var COMMUNICATION = 'Cadeau mariage Eunice et Eugene';
 
   // ----- Copier l'IBAN -----

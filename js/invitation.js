@@ -38,7 +38,7 @@
   // carton (mêmes valeurs que js/gifts.js et la section Cadeaux du site).
   var GIFT_IBAN_DISPLAY = 'BE87 6509 7998 8094';
   var GIFT_SEPA_PAYLOAD = [
-    'BCD', '002', '1', 'SCT', '', 'Eunice & Eugene', 'BE87650979988094',
+    'BCD', '002', '1', 'SCT', '', 'Eunice Mutope', 'BE87650979988094',
     '', '', '', 'Cadeau mariage Eunice et Eugene', ''
   ].join('\n');
   var REVOLUT_URL = 'https://revolut.me/eunice4erd/pocket/cvrXLl4OZa';
@@ -530,7 +530,7 @@
         '<h2>Par virement bancaire</h2>' +
         '<div class="pcard-walk pcard-pay">' +
           '<div class="pcard-steps">' +
-            'Bénéficiaire : <b>Eunice &amp; Eugène</b><br>' +
+            'Bénéficiaire : <b>Eunice Mutope</b><br>' +
             'IBAN : <b>' + GIFT_IBAN_DISPLAY + '</b><br>' +
             'Communication : <i>Cadeau mariage Eunice et Eugène</i>' +
           '</div>' +
