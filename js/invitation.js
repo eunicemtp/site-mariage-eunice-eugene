@@ -540,7 +540,7 @@
         '<div class="pcard-walk pcard-pay">' +
           '<div class="pcard-steps">' +
             'Paiement par carte bancaire, Apple Pay ou Google Pay, sans besoin d\'avoir un compte Revolut.<br>' +
-            '<b>revolut.me/eunice4erd</b>' +
+            '<b>' + REVOLUT_URL.replace(/^https?:\/\//, '') + '</b>' +
           '</div>' +
           '<div class="pcard-qr"><div id="pcardRevolutQr"></div>Scannez pour payer via Revolut</div>' +
         '</div>' +
