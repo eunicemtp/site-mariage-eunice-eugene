@@ -36,9 +36,9 @@
 
   // Infos de paiement reproduites sur la page "Cadeaux & Contact" du
   // carton (mêmes valeurs que js/gifts.js et la section Cadeaux du site).
-  var GIFT_IBAN_DISPLAY = 'BE06 0004 4436 8922';
+  var GIFT_IBAN_DISPLAY = 'BE87 6509 7998 8094';
   var GIFT_SEPA_PAYLOAD = [
-    'BCD', '002', '1', 'SCT', '', 'Eunice & Eugene', 'BE06000444368922',
+    'BCD', '002', '1', 'SCT', '', 'Eunice & Eugene', 'BE87650979988094',
     '', '', '', 'Cadeau mariage Eunice et Eugene', ''
   ].join('\n');
   var REVOLUT_URL = 'https://revolut.me/eunice4erd/pocket/cvrXLl4OZa';
