@@ -32,6 +32,17 @@
   // "Accès & Parking" — reproduit le trajet du QR code papier.
   var PARKING_MAPS_URL = 'https://www.google.com/maps/dir/?api=1&origin=Parking+Charleroi+Expo,+Boulevard+Solvay,+6000+Charleroi&destination=Boulevard+Paul+Janson+5,+6000+Charleroi&travelmode=walking';
 
+  var RSVP_DEADLINE = '15 octobre 2026';
+
+  // Infos de paiement reproduites sur la page "Cadeaux & Contact" du
+  // carton (mêmes valeurs que js/gifts.js et la section Cadeaux du site).
+  var GIFT_IBAN_DISPLAY = 'BE06 0004 4436 8922';
+  var GIFT_SEPA_PAYLOAD = [
+    'BCD', '002', '1', 'SCT', '', 'Eunice & Eugene', 'BE06000444368922',
+    '', '', '', 'Cadeau mariage Eunice et Eugene', ''
+  ].join('\n');
+  var REVOLUT_URL = 'https://revolut.me/eunice4erd/pocket/cvrXLl4OZa';
+
   // Monogramme "EE" intégré en SVG (pas <img src="...svg">) : html2canvas
   // ne capture pas de façon fiable les images SVG référencées par URL
   // (chargement asynchrone raté → logo tronqué). Réutilisé tel quel
@@ -387,7 +398,7 @@
       // confirmation au lieu de redemander de confirmer.
       var rsvpBlockHtml = guest.statut
         ? '<div style="font-family:Arial,sans-serif;font-size:14px;color:#3C6E47;background-color:#EAF3EC;border:1px solid #CFE3D4;border-radius:8px;padding:14px 18px;margin-top:20px;text-align:center;">✅ Votre présence a bien été confirmée. Merci !</div>'
-        : '<div style="font-family:Arial,sans-serif;font-size:13px;color:#6E6858;line-height:1.6;margin-top:20px;">Merci de confirmer votre présence avant le <strong>15 octobre 2026</strong>.</div>' +
+        : '<div style="font-family:Arial,sans-serif;font-size:13px;color:#6E6858;line-height:1.6;margin-top:20px;">Merci de confirmer votre présence avant le <strong>' + RSVP_DEADLINE + '</strong>.</div>' +
           '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;"><tr><td align="center">' +
             '<a href="https://www.maison-ee.be/#rsvp" style="display:inline-block;background-color:#15120E;color:#ffffff;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;text-decoration:none;padding:14px 32px;border-radius:999px;">Confirmer ma présence</a>' +
           '</td></tr></table>';
@@ -439,7 +450,7 @@
           '<div class="pcard-leaf">❧ &nbsp;&nbsp; ✦ &nbsp;&nbsp; ❧</div>' +
           '<div class="pcard-verse">« Ainsi ils ne sont plus deux, mais ils sont une seule chair.<br>Que l\'homme donc ne sépare pas ce que Dieu a joint. »</div>' +
           '<div class="pcard-marc">Matthieu 19:6</div>' +
-          '<div class="pcard-rsvp">Merci de confirmer votre présence<br><span>avant le 15 octobre 2026</span></div>' +
+          '<div class="pcard-rsvp">Merci de confirmer votre présence<br><span>avant le ' + RSVP_DEADLINE + '</span></div>' +
           '<div class="pcard-restricted">✦ Afin de préserver l\'intimité de cette célébration, cette invitation est exclusivement réservée aux personnes conviées.</div>' +
         '</div>';
 
@@ -508,11 +519,62 @@
         wrapper.appendChild(annexPage);
       }
 
+      // Dernière page, pour tous les invités : infos de paiement
+      // (virement SEPA + Revolut depuis l'étranger) et contact.
+      var giftsPage = document.createElement('div');
+      giftsPage.className = 'pcard-page pcard-annex pcard-gifts';
+      giftsPage.innerHTML =
+        '<h1>Cadeaux &amp; Contact</h1>' +
+        '<div class="pcard-sub">Votre présence est notre plus beau cadeau</div>' +
+        '<div class="pcard-arrive">Si vous souhaitez nous témoigner votre générosité, vous pouvez participer à notre liste de cadeaux par l\'un des moyens ci-dessous.</div>' +
+        '<h2>Par virement bancaire</h2>' +
+        '<div class="pcard-walk pcard-pay">' +
+          '<div class="pcard-steps">' +
+            'Bénéficiaire : <b>Eunice &amp; Eugène</b><br>' +
+            'IBAN : <b>' + GIFT_IBAN_DISPLAY + '</b><br>' +
+            'Communication : <i>Cadeau mariage Eunice et Eugène</i>' +
+          '</div>' +
+          '<div class="pcard-qr"><div id="pcardGiftQr"></div>Scannez avec votre application bancaire pour un virement pré-rempli</div>' +
+        '</div>' +
+        '<h2>Depuis l\'étranger — par carte (Revolut)</h2>' +
+        '<div class="pcard-walk pcard-pay">' +
+          '<div class="pcard-steps">' +
+            'Paiement par carte bancaire, Apple Pay ou Google Pay, sans besoin d\'avoir un compte Revolut.<br>' +
+            '<b>revolut.me/eunice4erd</b>' +
+          '</div>' +
+          '<div class="pcard-qr"><div id="pcardRevolutQr"></div>Scannez pour payer via Revolut</div>' +
+        '</div>' +
+        '<h2>Une question ?</h2>' +
+        '<div class="pcard-arrive">' +
+          '04 88 68 23 25 &nbsp;·&nbsp; 04 65 68 47 74<br>' +
+          'mtpeunice@gmail.com<br>' +
+          'Confirmation de présence avant le <b>' + RSVP_DEADLINE + '</b> sur <b>www.maison-ee.be</b>' +
+        '</div>' +
+        '<div class="pcard-note">Avec toute notre gratitude — Eunice &amp; Eugène ✦</div>';
+      wrapper.appendChild(giftsPage);
+
       document.body.appendChild(wrapper);
 
-      if (annexPage && window.QRCode) {
-        new window.QRCode(annexPage.querySelector('#pcardQrCanvas'), {
-          text: PARKING_MAPS_URL,
+      if (window.QRCode) {
+        if (annexPage) {
+          new window.QRCode(annexPage.querySelector('#pcardQrCanvas'), {
+            text: PARKING_MAPS_URL,
+            width: 110,
+            height: 110,
+            colorDark: '#171512',
+            colorLight: '#f6f0e6'
+          });
+        }
+        new window.QRCode(giftsPage.querySelector('#pcardGiftQr'), {
+          text: GIFT_SEPA_PAYLOAD,
+          width: 110,
+          height: 110,
+          colorDark: '#171512',
+          colorLight: '#f6f0e6',
+          correctLevel: window.QRCode.CorrectLevel.M
+        });
+        new window.QRCode(giftsPage.querySelector('#pcardRevolutQr'), {
+          text: REVOLUT_URL,
           width: 110,
           height: 110,
           colorDark: '#171512',
@@ -535,7 +597,7 @@
           link.click();
         }).catch(cleanup);
       } else if (window.jspdf) {
-        var pages = annexPage ? [mainPage, annexPage] : [mainPage];
+        var pages = annexPage ? [mainPage, annexPage, giftsPage] : [mainPage, giftsPage];
         var canvases = [];
         (function captureNext(i) {
           if (i >= pages.length) {

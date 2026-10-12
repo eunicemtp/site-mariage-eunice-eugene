@@ -757,6 +757,8 @@ p { margin: 0 0 1em; }
 .pcard-steps li { margin-bottom: 6px; }
 .pcard-qr { width: 130px; text-align: center; font-size: 8.5px; line-height: 1.3; flex: 0 0 auto; }
 .pcard-qr canvas, .pcard-qr img { width: 110px; height: 110px; }
+.pcard-pay { margin-bottom: 20px; }
+.pcard-pay .pcard-steps { line-height: 1.8; }
 .pcard-note {
   margin-top: 18px;
   padding-top: 10px;
