@@ -32,7 +32,7 @@
   // "Accès & Parking" — reproduit le trajet du QR code papier.
   var PARKING_MAPS_URL = 'https://www.google.com/maps/dir/?api=1&origin=Parking+Charleroi+Expo,+Boulevard+Solvay,+6000+Charleroi&destination=Boulevard+Paul+Janson+5,+6000+Charleroi&travelmode=walking';
 
-  var RSVP_DEADLINE = '15 octobre 2026';
+  var RSVP_DEADLINE = '25 octobre 2026';
 
   // Infos de paiement reproduites sur la page "Cadeaux & Contact" du
   // carton (mêmes valeurs que js/gifts.js et la section Cadeaux du site).
